@@ -163,9 +163,7 @@ class Annotator extends EventEmitter {
      * @return {void}
      */
     hideAnnotations() {
-        Object.keys(this.threads).forEach((pageNum) => {
-            this.hideAnnotationsOnPage(pageNum);
-        });
+        Object.keys(this.modeControllers).forEach((mode) => this.modeControllers[mode].hideAnnotations());
     }
 
     /**
@@ -175,15 +173,7 @@ class Annotator extends EventEmitter {
      * @return {void}
      */
     hideAnnotationsOnPage(pageNum) {
-        if (!this.threads) {
-            return;
-        }
-
-        const pageThreads = this.threads[pageNum] || {};
-        Object.keys(pageThreads).forEach((threadID) => {
-            const thread = pageThreads[threadID];
-            thread.hide();
-        });
+        Object.keys(this.modeControllers).forEach((mode) => this.modeControllers[mode].hideAnnotationsOnPage(pageNum));
     }
 
     /**
@@ -247,7 +237,6 @@ class Annotator extends EventEmitter {
      */
     setupAnnotations() {
         // Map of page => {threads on page}
-        this.threads = {};
         this.bindDOMListeners();
         this.bindCustomListenersOnService(this.annotationService);
         this.addListener(ANNOTATOR_EVENT.scale, this.scaleAnnotations);
@@ -324,12 +313,10 @@ class Annotator extends EventEmitter {
      * @return {Promise} Promise for fetching saved annotations
      */
     fetchAnnotations() {
-        this.threads = {};
-
         // Do not load any pre-existing annotations if the user does not have
         // the correct permissions
         if (!this.permissions.canViewAllAnnotations && !this.permissions.canViewOwnAnnotations) {
-            return Promise.resolve(this.threads);
+            return Promise.resolve({});
         }
 
         return this.annotationService
@@ -499,7 +486,8 @@ class Annotator extends EventEmitter {
             return null;
         }
 
-        const pageThreads = this.threads[location.page] || {};
+        const controller = this.modeControllers[TYPES.point];
+        const pageThreads = controller.threads[location.page] || {};
         const thread = pageThreads[pendingThreadID];
         if (!thread) {
             return null;
@@ -525,9 +513,7 @@ class Annotator extends EventEmitter {
      * @return {void}
      */
     renderAnnotations() {
-        Object.keys(this.threads).forEach((pageNum) => {
-            this.renderAnnotationsOnPage(pageNum);
-        });
+        Object.keys(this.modeControllers).forEach((mode) => this.modeControllers[mode].renderAnnotations());
     }
 
     /**
@@ -538,21 +524,7 @@ class Annotator extends EventEmitter {
      * @return {void}
      */
     renderAnnotationsOnPage(pageNum) {
-        if (!this.threads) {
-            return;
-        }
-
-        const pageThreads = this.threads[pageNum] || {};
-        Object.keys(pageThreads).forEach((threadID) => {
-            // Sets the annotatedElement if the thread was fetched before the
-            // dependent document/viewer finished loading
-            const thread = pageThreads[threadID];
-            if (!thread.annotatedElement) {
-                thread.annotatedElement = this.annotatedElement;
-            }
-
-            thread.show();
-        });
+        Object.keys(this.modeControllers).forEach((mode) => this.modeControllers[mode].renderAnnotationsOnPage(pageNum));
     }
 
     /**
@@ -723,7 +695,6 @@ class Annotator extends EventEmitter {
      * @return {void}
      */
     handleControllerEvents(data) {
-        let opt = { page: 1, pageThreads: {} };
         const headerSelector = data.data ? data.data.headerSelector : '';
         switch (data.event) {
             case CONTROLLER_EVENT.toggleMode:
@@ -736,16 +707,6 @@ class Annotator extends EventEmitter {
             case CONTROLLER_EVENT.exit:
                 this.emit(data.event, { mode: data.mode, headerSelector });
                 this.bindDOMListeners();
-                break;
-            case CONTROLLER_EVENT.register:
-                opt = util.addThreadToMap(data.data, this.threads);
-                this.threads[opt.page] = opt.pageThreads;
-                this.emit(data.event, data.data);
-                break;
-            case CONTROLLER_EVENT.unregister:
-                opt = util.removeThreadFromMap(data.data, this.threads);
-                this.threads[opt.page] = opt.pageThreads;
-                this.emit(data.event, data.data);
                 break;
             case CONTROLLER_EVENT.createThread:
                 this.createPointThread(data.data);
