@@ -23,7 +23,7 @@ describe('doc/DocPointThread', () => {
             annotationService: {},
             fileVersionId: 1,
             location: {},
-            threadID: 2,
+            threadId: 2,
             type: 'point',
             permissions: {
                 canAnnotate: true

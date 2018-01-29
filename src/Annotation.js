@@ -7,9 +7,9 @@ class Annotation {
      * The data object for constructing an annotation.
      *
      * @typedef {Object} AnnotationData
-     * @property {string} annotationID Annotation ID
-     * @property {string} fileVersionId File version ID for this annotation
-     * @property {string} threadID Thread ID
+     * @property {string} annotationId Annotation Id
+     * @property {string} fileVersionId File version Id for this annotation
+     * @property {string} threadId Thread Id
      * @property {string} thread Thread number
      * @property {string} type Annotation type, e.g. 'point' or 'highlight'
      * @property {string} text Annotation text
@@ -31,9 +31,9 @@ class Annotation {
      * @return {Annotation} Instance of annotation
      */
     constructor(data) {
-        this.annotationID = data.annotationID;
+        this.annotationId = data.annotationId;
         this.fileVersionId = data.fileVersionId;
-        this.threadID = data.threadID;
+        this.threadId = data.threadId;
         this.threadNumber = data.threadNumber;
         this.type = data.type;
         this.text = data.text;

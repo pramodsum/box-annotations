@@ -41,7 +41,7 @@ describe('Annotator', () => {
             enter: () => {},
             exit: () => {},
             setupSharedDialog: () => {},
-            getThreadByID: () => {}
+            getThreadById: () => {}
         };
         stubs.controllerMock = sandbox.mock(stubs.controller);
 
@@ -72,7 +72,7 @@ describe('Annotator', () => {
         });
 
         stubs.thread = {
-            threadID: '123abc',
+            threadId: '123abc',
             show: () => {},
             hide: () => {},
             addListener: () => {},
@@ -87,7 +87,7 @@ describe('Annotator', () => {
         stubs.threadMock = sandbox.mock(stubs.thread);
 
         stubs.thread2 = {
-            threadID: '456def',
+            threadId: '456def',
             show: () => {},
             hide: () => {},
             addListener: () => {},
@@ -99,7 +99,7 @@ describe('Annotator', () => {
         stubs.threadMock2 = sandbox.mock(stubs.thread2);
 
         stubs.thread3 = {
-            threadID: '789ghi',
+            threadId: '789ghi',
             show: () => {},
             hide: () => {},
             addListener: () => {},
@@ -355,8 +355,8 @@ describe('Annotator', () => {
                 stubs.serviceMock = sandbox.mock(annotator.annotationService);
 
                 const threadMap = {
-                    someID: [{}, {}],
-                    someID2: [{}]
+                    someId: [{}, {}],
+                    someId2: [{}]
                 };
                 stubs.threadPromise = Promise.resolve(threadMap);
 
@@ -617,13 +617,13 @@ describe('Annotator', () => {
             it('should do nothing if the point data is invalid', () => {
                 annotator.createPointThread({
                     lastPointEvent: {},
-                    pendingThreadID: '123abc',
+                    pendingThreadId: '123abc',
                     commentText: ' '
                 });
 
                 annotator.createPointThread({
                     lastPointEvent: {},
-                    pendingThreadID: '123abc'
+                    pendingThreadId: '123abc'
                 });
 
                 annotator.createPointThread({
@@ -632,7 +632,7 @@ describe('Annotator', () => {
                 });
 
                 annotator.createPointThread({
-                    pendingThreadID: '123abc',
+                    pendingThreadId: '123abc',
                     commentText: ' '
                 });
                 expect(annotator.emit).to.not.be.called;
@@ -643,7 +643,7 @@ describe('Annotator', () => {
 
                 const result = annotator.createPointThread({
                     lastPointEvent: {},
-                    pendingThreadID: '123abc',
+                    pendingThreadId: '123abc',
                     commentText: 'text'
                 });
                 expect(annotator.emit).to.not.be.called;
@@ -651,10 +651,10 @@ describe('Annotator', () => {
             });
 
             it('should do nothing the thread does not exist in the page specified by lastPointEvent', () => {
-                stubs.controllerMock.expects('getThreadByID').returns(null);
+                stubs.controllerMock.expects('getThreadById').returns(null);
                 const result = annotator.createPointThread({
                     lastPointEvent: {},
-                    pendingThreadID: '123abc',
+                    pendingThreadId: '123abc',
                     commentText: 'text'
                 });
                 expect(annotator.emit).to.not.be.called;
@@ -664,11 +664,11 @@ describe('Annotator', () => {
             it('should create a point annotation thread using lastPointEvent', () => {
                 stubs.threadMock.expects('showDialog');
                 stubs.threadMock.expects('getThreadEventData').returns({});
-                stubs.controllerMock.expects('getThreadByID').returns(stubs.thread);
+                stubs.controllerMock.expects('getThreadById').returns(stubs.thread);
 
                 const result = annotator.createPointThread({
                     lastPointEvent: {},
-                    pendingThreadID: '123abc',
+                    pendingThreadId: '123abc',
                     commentText: 'text'
                 });
 
@@ -681,25 +681,25 @@ describe('Annotator', () => {
         });
 
         describe('scrollToAnnotation()', () => {
-            it('should do nothing if no threadID is provided', () => {
+            it('should do nothing if no threadId is provided', () => {
                 stubs.threadMock.expects('scrollIntoView').never();
                 annotator.scrollToAnnotation();
             });
 
-            it('should do nothing if threadID does not exist on page', () => {
+            it('should do nothing if threadId does not exist on page', () => {
                 stubs.threadMock.expects('scrollIntoView').never();
                 annotator.scrollToAnnotation('wrong');
             });
 
-            it('should scroll to annotation if threadID exists on page', () => {
+            it('should scroll to annotation if threadId exists on page', () => {
                 annotator.modeControllers = {
                     'type': {
-                        getThreadByID: sandbox.stub().returns(stubs.thread),
+                        getThreadById: sandbox.stub().returns(stubs.thread),
                         threads: { 1: { '123abc': stubs.thread } }
                     }
                 };
                 stubs.threadMock.expects('scrollIntoView');
-                annotator.scrollToAnnotation(stubs.thread.threadID);
+                annotator.scrollToAnnotation(stubs.thread.threadId);
             });
         });
 

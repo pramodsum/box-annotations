@@ -41,7 +41,7 @@ class PointModeController extends AnnotationModeController {
      * @return {void}
      */
     onDialogCancel() {
-        const thread = this.getThreadByID(this.pendingThreadID);
+        const thread = this.getThreadById(this.pendingThreadId);
         this.unregisterThread(thread);
         thread.destroy();
 
@@ -59,7 +59,7 @@ class PointModeController extends AnnotationModeController {
         this.emit(CONTROLLER_EVENT.createThread, {
             commentText,
             lastPointEvent: this.lastPointEvent,
-            pendingThreadID: this.pendingThreadID
+            pendingThreadId: this.pendingThreadId
         });
 
         this.hideSharedDialog();
@@ -73,7 +73,7 @@ class PointModeController extends AnnotationModeController {
      */
     hideSharedDialog() {
         this.lastPointEvent = null;
-        this.pendingThreadID = null;
+        this.pendingThreadId = null;
 
         if (this.createDialog && this.createDialog.isVisible) {
             this.createDialog.hide();
@@ -142,7 +142,7 @@ class PointModeController extends AnnotationModeController {
 
         if (this.isMobile) {
             this.lastPointEvent = event;
-            this.pendingThreadID = thread.threadID;
+            this.pendingThreadId = thread.threadId;
 
             this.container.appendChild(this.createDialog.containerEl);
             this.createDialog.show(this.container);

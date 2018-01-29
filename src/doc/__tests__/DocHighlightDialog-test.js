@@ -96,15 +96,15 @@ describe('doc/DocHighlightDialog', () => {
 
             dialog.addAnnotation(
                 new Annotation({
-                    annotationID: 'someID',
+                    annotationId: 'someId',
                     text: 'blah',
                     user: {},
                     permissions: {}
                 })
             );
 
-            dialog.removeAnnotation('someID');
-            const annotationEl = dialog.commentsDialogEl.querySelector('[data-annotation-id="someID"]');
+            dialog.removeAnnotation('someId');
+            const annotationEl = dialog.commentsDialogEl.querySelector('[data-annotation-id="someId"]');
             expect(annotationEl).to.be.null;
             expect(stubs.deactivate).to.be.called;
         });
@@ -112,7 +112,7 @@ describe('doc/DocHighlightDialog', () => {
         it('should not do anything if the specified annotation does not exist', () => {
             stubs.deactivate = sandbox.stub(dialog, 'deactivateReply');
 
-            dialog.removeAnnotation('someID');
+            dialog.removeAnnotation('someId');
             expect(stubs.deactivate).to.not.be.called;
         });
     });
@@ -650,7 +650,7 @@ describe('doc/DocHighlightDialog', () => {
         it('should not add a comment if the text is blank', () => {
             dialog.addAnnotationElement(
                 new Annotation({
-                    annotationID: 1,
+                    annotationId: 1,
                     text: '',
                     user: {},
                     permissions: {}

@@ -58,11 +58,11 @@ class DocHighlightDialog extends AnnotationDialog {
     /**
      * Removes an annotation from the dialog.
      *
-     * @param {string} annotationID ID of annotation to remove
+     * @param {string} annotationId Id of annotation to remove
      * @return {void}
      */
-    removeAnnotation(annotationID) {
-        const annotationEl = this.commentsDialogEl.querySelector(`[data-annotation-id="${annotationID}"]`);
+    removeAnnotation(annotationId) {
+        const annotationEl = this.commentsDialogEl.querySelector(`[data-annotation-id="${annotationId}"]`);
         if (annotationEl) {
             annotationEl.parentNode.removeChild(annotationEl);
             this.deactivateReply(); // Deactivate reply area and focus
@@ -304,7 +304,7 @@ class DocHighlightDialog extends AnnotationDialog {
         }
 
         // Checks if highlight is a plain highlight annotation and if
-        // user name has been populated. If userID is 0, user name will
+        // user name has been populated. If userId is 0, user name will
         // be 'Some User'
         if (util.isPlainHighlight(annotations) && firstAnnotation && firstAnnotation.user.id !== '0') {
             const highlightLabelEl = this.highlightDialogEl.querySelector(`.${CLASS_HIGHLIGHT_LABEL}`);
@@ -541,7 +541,7 @@ class DocHighlightDialog extends AnnotationDialog {
     addAnnotationElement(annotation) {
         // If annotation text is blank, don't add to the comments dialog
         if (annotation.text === '') {
-            this.highlightDialogEl.dataset.annotationId = annotation.annotationID;
+            this.highlightDialogEl.dataset.annotationId = annotation.annotationId;
         } else {
             super.addAnnotationElement(annotation);
         }

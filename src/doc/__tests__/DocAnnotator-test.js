@@ -73,7 +73,7 @@ describe('doc/DocAnnotator', () => {
         sandbox.stub(annotator, 'emit');
 
         stubs.thread = {
-            threadID: '123abc',
+            threadId: '123abc',
             location: { page: 1 },
             state: STATES.pending,
             type: TYPES.highlight,
@@ -115,7 +115,7 @@ describe('doc/DocAnnotator', () => {
     });
 
     describe('init()', () => {
-        it('should add ID to annotatedElement add createHighlightDialog init listener', () => {
+        it('should add Id to annotatedElement add createHighlightDialog init listener', () => {
             annotator.init(1);
             expect(annotator.annotatedElement.id).to.not.be.undefined;
         });
@@ -342,7 +342,7 @@ describe('doc/DocAnnotator', () => {
             Object.defineProperty(AnnotationThread.prototype, 'setup', { value: sandbox.mock() });
             const annotation = new Annotation({
                 fileVersionId: 2,
-                threadID: '1',
+                threadId: '1',
                 type: TYPES.point,
                 threadNumber: '1',
                 text: 'blah',
@@ -350,7 +350,7 @@ describe('doc/DocAnnotator', () => {
             });
             const thread = annotator.createAnnotationThread([annotation], {}, TYPES.highlight);
 
-            expect(thread.threadID).to.equal(annotation.threadID);
+            expect(thread.threadId).to.equal(annotation.threadId);
             expect(thread.threadNumber).to.equal(annotation.threadNumber);
             expect(thread instanceof DocHighlightThread).to.be.true;
             expect(annotator.handleValidationError).to.not.be.called;
@@ -921,7 +921,7 @@ describe('doc/DocAnnotator', () => {
     describe('onHighlightCheck()', () => {
         beforeEach(() => {
             stubs.thread = {
-                threadID: '123abc',
+                threadId: '123abc',
                 location: { page : 1 },
                 type: TYPES.highlight,
             };
@@ -1112,7 +1112,7 @@ describe('doc/DocAnnotator', () => {
         });
 
         it('should do nothing the the user is currently creating a point annotation', () => {
-            annotator.modeControllers['point'].pendingThreadID = 'something';
+            annotator.modeControllers['point'].pendingThreadId = 'something';
             annotator.onSelectionChange({});
             expect(stubs.getSelStub).to.not.be.called;
         });

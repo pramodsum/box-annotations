@@ -10,7 +10,7 @@ import {
     CLASS_ANNOTATION_DIALOG,
     CLASS_MOBILE_DIALOG_HEADER,
     CLASS_DIALOG_CLOSE,
-    ID_MOBILE_ANNOTATION_DIALOG,
+    Id_MOBILE_ANNOTATION_DIALOG,
     TYPES,
     STATES,
     THREAD_EVENT,
@@ -30,7 +30,7 @@ class Annotator extends EventEmitter {
      * @typedef {Object} AnnotatorData
      * @property {HTMLElement} annotatedElement HTML element to annotate on
      * @property {AnnotationService} [annotationService] Annotations CRUD service
-     * @property {string} fileVersionId File version ID
+     * @property {string} fileVersionId File version Id
      */
 
     //--------------------------------------------------------------------------
@@ -278,7 +278,7 @@ class Annotator extends EventEmitter {
         this.mobileDialogEl.classList.add(CLASS_MOBILE_ANNOTATION_DIALOG);
         this.mobileDialogEl.classList.add(CLASS_ANNOTATION_DIALOG);
         this.mobileDialogEl.classList.add(CLASS_HIDDEN);
-        this.mobileDialogEl.id = ID_MOBILE_ANNOTATION_DIALOG;
+        this.mobileDialogEl.id = Id_MOBILE_ANNOTATION_DIALOG;
         this.container.appendChild(this.mobileDialogEl);
 
         const mobileHeader = document.createElement('div');
@@ -331,7 +331,7 @@ class Annotator extends EventEmitter {
     }
 
     /**
-     * Generates a map of thread ID to annotations in thread by page.
+     * Generates a map of thread Id to annotations in thread by page.
      *
      * @private
      * @param {Object} threadMap - Annotations to generate map from
@@ -344,8 +344,8 @@ class Annotator extends EventEmitter {
         }
 
         // Generate map of page to threads
-        Object.keys(threadMap).forEach((threadID) => {
-            const annotations = threadMap[threadID];
+        Object.keys(threadMap).forEach((threadId) => {
+            const annotations = threadMap[threadId];
 
             // NOTE: Using the last annotation to evaluate if the annotation type
             // is enabled because highlight comment annotations may have a plain
@@ -439,10 +439,10 @@ class Annotator extends EventEmitter {
             localized: this.localized
         };
 
-        // Set existing thread ID if created with annotations
+        // Set existing thread Id if created with annotations
         const firstAnnotation = util.getFirstAnnotation(annotations);
         if (firstAnnotation) {
-            params.threadID = firstAnnotation.threadID;
+            params.threadId = firstAnnotation.threadId;
             params.threadNumber = firstAnnotation.threadNumber;
         }
 
@@ -471,13 +471,13 @@ class Annotator extends EventEmitter {
      * @param {string} data.commentText - The text for the first comment in
      * the thread.
      * @param {string} data.lastPointEvent - Point event for the annotation location
-     * @param {string} data.pendingThreadID - Thread ID for the current pending point thread
+     * @param {string} data.pendingThreadId - Thread Id for the current pending point thread
      * @return {AnnotationThread} Created point annotation thread
      */
     createPointThread(data) {
         // Empty string will be passed in if no text submitted in comment
-        const { commentText, lastPointEvent, pendingThreadID } = data;
-        if (!lastPointEvent || !pendingThreadID || !commentText || commentText.trim() === '') {
+        const { commentText, lastPointEvent, pendingThreadId } = data;
+        if (!lastPointEvent || !pendingThreadId || !commentText || commentText.trim() === '') {
             return null;
         }
 
@@ -487,7 +487,7 @@ class Annotator extends EventEmitter {
         }
 
         const controller = this.modeControllers[TYPES.point];
-        const thread = controller.getThreadByID(pendingThreadID);
+        const thread = controller.getThreadById(pendingThreadId);
         if (!controller || !thread) {
             return null;
         }
@@ -578,16 +578,16 @@ class Annotator extends EventEmitter {
      * Scrolls specified annotation into view
      *
      * @private
-     * @param {Object} threadID - annotation threadID for thread that should scroll into view
+     * @param {Object} threadId - annotation threadId for thread that should scroll into view
      * @return {void}
      */
-    scrollToAnnotation(threadID) {
-        if (!threadID) {
+    scrollToAnnotation(threadId) {
+        if (!threadId) {
             return;
         }
 
         Object.keys(this.modeControllers).forEach((mode) => {
-            const thread = this.modeControllers[mode].getThreadByID(threadID);
+            const thread = this.modeControllers[mode].getThreadById(threadId);
             if (thread) {
                 thread.scrollIntoView();
             }

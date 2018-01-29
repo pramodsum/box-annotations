@@ -25,22 +25,22 @@ describe('AnnotationService', () => {
         fetchMock.restore();
     });
 
-    describe('generateID()', () => {
+    describe('generateId()', () => {
         it('should return a rfc4122v4-compliant GUID', () => {
-            const GUID = AnnotationService.generateID();
+            const GUID = AnnotationService.generateId();
             const regex = /^[a-z0-9]{8}-[a-z0-9]{4}-4[a-z0-9]{3}-[a-z0-9]{4}-[a-z0-9]{12}$/i;
             expect(GUID.match(regex).length).to.satisfy;
         });
 
         it('should (almost always) return unique GUIDs', () => {
-            expect(AnnotationService.generateID() === AnnotationService.generateID()).to.be.false;
+            expect(AnnotationService.generateId() === AnnotationService.generateId()).to.be.false;
         });
     });
 
     describe('create()', () => {
         const annotationToSave = new Annotation({
             fileVersionId: 2,
-            threadID: AnnotationService.generateID(),
+            threadId: AnnotationService.generateId(),
             type: 'point',
             threadNumber: '1',
             text: 'blah',
@@ -51,13 +51,13 @@ describe('AnnotationService', () => {
         it('should create annotation and return created object', () => {
             fetchMock.mock(url, {
                 body: {
-                    id: AnnotationService.generateID(),
+                    id: AnnotationService.generateId(),
                     item: {
                         id: annotationToSave.fileVersionId
                     },
                     details: {
                         type: annotationToSave.type,
-                        threadID: annotationToSave.threadID,
+                        threadId: annotationToSave.threadId,
                         location: annotationToSave.location
                     },
                     thread: annotationToSave.threadNumber,
@@ -69,7 +69,7 @@ describe('AnnotationService', () => {
 
             return annotationService.create(annotationToSave).then((createdAnnotation) => {
                 expect(createdAnnotation.fileVersionId).to.equal(annotationToSave.fileVersionId);
-                expect(createdAnnotation.threadID).to.equal(annotationToSave.threadID);
+                expect(createdAnnotation.threadId).to.equal(annotationToSave.threadId);
                 expect(createdAnnotation.threadNumber).to.equal(annotationToSave.threadNumber);
                 expect(createdAnnotation.type).to.equal(annotationToSave.type);
                 expect(createdAnnotation.text).to.equal(annotationToSave.text);
@@ -108,7 +108,7 @@ describe('AnnotationService', () => {
         it('should return array of annotations for the specified file and file version', () => {
             const annotation1 = new Annotation({
                 fileVersionId: 2,
-                threadID: AnnotationService.generateID(),
+                threadId: AnnotationService.generateId(),
                 type: 'point',
                 text: 'blah',
                 threadNumber: '1',
@@ -117,7 +117,7 @@ describe('AnnotationService', () => {
 
             const annotation2 = new Annotation({
                 fileVersionId: 2,
-                threadID: AnnotationService.generateID(),
+                threadId: AnnotationService.generateId(),
                 type: 'highlight',
                 text: 'blah2',
                 threadNumber: '2',
@@ -128,13 +128,13 @@ describe('AnnotationService', () => {
                 body: {
                     entries: [
                         {
-                            id: AnnotationService.generateID(),
+                            id: AnnotationService.generateId(),
                             item: {
                                 id: annotation1.fileVersionId
                             },
                             details: {
                                 type: annotation1.type,
-                                threadID: annotation1.threadID,
+                                threadId: annotation1.threadId,
                                 location: annotation1.location
                             },
                             message: annotation1.text,
@@ -142,13 +142,13 @@ describe('AnnotationService', () => {
                             created_by: {}
                         },
                         {
-                            id: AnnotationService.generateID(),
+                            id: AnnotationService.generateId(),
                             item: {
                                 id: annotation2.fileVersionId
                             },
                             details: {
                                 type: annotation2.type,
-                                threadID: annotation2.threadID,
+                                threadId: annotation2.threadId,
                                 location: annotation2.location
                             },
                             message: annotation2.text,
@@ -184,7 +184,7 @@ describe('AnnotationService', () => {
                     throw new Error('Annotations should not be returned');
                 },
                 (error) => {
-                    expect(error.message).to.equal('Could not read annotations from file version with ID 2');
+                    expect(error.message).to.equal('Could not read annotations from file version with Id 2');
                 }
             );
         });
@@ -216,7 +216,7 @@ describe('AnnotationService', () => {
                     throw new Error('Annotation should not have been deleted');
                 },
                 (error) => {
-                    expect(error.message).to.equal('Could not delete annotation with ID 3');
+                    expect(error.message).to.equal('Could not delete annotation with Id 3');
                     expect(emitStub).to.be.calledWith('annotationerror', {
                         reason: 'delete',
                         error: sinon.match.string
@@ -227,34 +227,34 @@ describe('AnnotationService', () => {
     });
 
     describe('getThreadMap()', () => {
-        it('should call read and then generate a map of thread ID to annotations in those threads', () => {
+        it('should call read and then generate a map of thread Id to annotations in those threads', () => {
             const annotation1 = new Annotation({
                 fileVersionId: 2,
-                annotationID: 1,
+                annotationId: 1,
                 type: 'point',
                 text: 'blah',
                 threadNumber: '1',
-                threadID: '123abc',
+                threadId: '123abc',
                 location: { x: 0, y: 0 }
             });
 
             const annotation2 = new Annotation({
                 fileVersionId: 2,
-                annotationID: 2,
+                annotationId: 2,
                 type: 'point',
                 text: 'blah2',
                 threadNumber: '2',
-                threadID: '456def',
+                threadId: '456def',
                 location: { x: 0, y: 0 }
             });
 
             const annotation3 = new Annotation({
                 fileVersionId: 2,
-                annotationID: 3,
+                annotationId: 3,
                 type: 'point',
                 text: 'blah3',
                 threadNumber: '1',
-                threadID: '123abc',
+                threadId: '123abc',
                 location: { x: 0, y: 0 }
             });
 
@@ -276,49 +276,49 @@ describe('AnnotationService', () => {
         it('should create a thread map with the correct annotations', () => {
             const annotation1 = new Annotation({
                 fileVersionId: 2,
-                annotationID: 1,
+                annotationId: 1,
                 type: 'point',
                 text: 'blah',
                 threadNumber: '1',
-                threadID: '123abc',
+                threadId: '123abc',
                 location: { x: 0, y: 0 }
             });
 
             const annotation2 = new Annotation({
                 fileVersionId: 2,
-                annotationID: 2,
+                annotationId: 2,
                 type: 'point',
                 text: 'blah2',
                 threadNumber: '2',
-                threadID: '456def',
+                threadId: '456def',
                 location: { x: 0, y: 0 }
             });
 
             const annotation3 = new Annotation({
                 fileVersionId: 2,
-                annotationID: 3,
+                annotationId: 3,
                 type: 'point',
                 text: 'blah3',
                 threadNumber: '1',
-                threadID: '123abc',
+                threadId: '123abc',
                 location: { x: 0, y: 0 }
             });
 
             const annotation4 = new Annotation({
                 fileVersionId: 2,
-                annotationID: 4,
+                annotationId: 4,
                 type: 'point',
                 text: 'blah4',
                 threadNumber: '1',
-                threadID: '123abc',
+                threadId: '123abc',
                 location: { x: 0, y: 0 }
             });
 
             const threadMap = annotationService.createThreadMap([annotation1, annotation2, annotation3, annotation4]);
 
-            expect(Object.keys(threadMap[annotation1.threadID]).length).to.equal(3);
+            expect(Object.keys(threadMap[annotation1.threadId]).length).to.equal(3);
 
-            const thread = threadMap[annotation1.threadID];
+            const thread = threadMap[annotation1.threadId];
             expect(thread[1]).to.deep.equal(annotation1);
             expect(thread[1].threadNumber).to.equal(annotation1.threadNumber);
             expect(thread).to.not.contain(annotation2);
@@ -329,14 +329,14 @@ describe('AnnotationService', () => {
         it('should call the Annotation constructor', () => {
             const data = {
                 fileVersionId: 2,
-                threadID: 1,
+                threadId: 1,
                 type: 'point',
                 text: 'blah3',
                 threadNumber: '1',
                 location: { x: 0, y: 0 },
                 created: Date.now(),
                 item: { id: 1 },
-                details: { threadID: 1 },
+                details: { threadId: 1 },
                 created_by: { id: 1 }
             };
             const annotation1 = annotationService.createAnnotation(data);
@@ -351,7 +351,7 @@ describe('AnnotationService', () => {
 
             const annotation2 = new Annotation({
                 fileVersionId: 2,
-                threadID: AnnotationService.generateID(),
+                threadId: AnnotationService.generateId(),
                 type: 'highlight',
                 text: 'blah2',
                 threadNumber: '1',
@@ -362,13 +362,13 @@ describe('AnnotationService', () => {
                 body: {
                     entries: [
                         {
-                            id: AnnotationService.generateID(),
+                            id: AnnotationService.generateId(),
                             item: {
                                 id: annotation2.fileVersionId
                             },
                             details: {
                                 type: annotation2.type,
-                                threadID: annotation2.threadID,
+                                threadId: annotation2.threadId,
                                 location: annotation2.location
                             },
                             thread: annotation2.threadNumber,
@@ -420,7 +420,7 @@ describe('AnnotationService', () => {
                     throw new Error('Annotation should not have been deleted');
                 },
                 (error) => {
-                    expect(error.message).to.equal('Could not read annotations from file version with ID 2');
+                    expect(error.message).to.equal('Could not read annotations from file version with Id 2');
                     expect(emitStub).to.be.calledWith('annotationerror', {
                         reason: 'read',
                         error: sinon.match.string

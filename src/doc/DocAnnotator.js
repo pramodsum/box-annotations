@@ -39,7 +39,7 @@ const SELECTOR_PREVIEW_DOC = '.bp-doc';
 const CLASS_DEFAULT_CURSOR = 'bp-use-default-cursor';
 
 // Required by rangy highlighter
-const ID_ANNOTATED_ELEMENT = 'bp-rangy-annotated-element';
+const Id_ANNOTATED_ELEMENT = 'bp-rangy-annotated-element';
 
 const ANNOTATION_LAYER_CLASSES = [
     CLASS_ANNOTATION_LAYER_HIGHLIGHT,
@@ -111,7 +111,7 @@ class DocAnnotator extends Annotator {
         super.init(initialScale);
 
         // Allow rangy to highlight this
-        this.annotatedElement.id = ID_ANNOTATED_ELEMENT;
+        this.annotatedElement.id = Id_ANNOTATED_ELEMENT;
     }
 
     //--------------------------------------------------------------------------
@@ -555,7 +555,7 @@ class DocAnnotator extends Annotator {
         // Do nothing if in a text area or mobile dialog or mobile create dialog is already open
         const isHidden = this.mobileDialogEl && this.mobileDialogEl.classList.contains(CLASS_HIDDEN);
         const pointController = this.modeControllers[TYPES.point];
-        const isCreatingPoint = !!(pointController && pointController.pendingThreadID);
+        const isCreatingPoint = !!(pointController && pointController.pendingThreadId);
         if (isCreatingPoint || !isHidden || document.activeElement.nodeName.toLowerCase() === 'textarea') {
             return;
         }
@@ -978,7 +978,7 @@ class DocAnnotator extends Annotator {
 
     /**
      * Helper to remove a Rangy highlight by deleting the highlight in the
-     * internal highlighter list that has a matching ID. We can't directly use
+     * internal highlighter list that has a matching Id. We can't directly use
      * the highlighter's removeHighlights since the highlight could possibly
      * not be a true Rangy highlight object.
      *

@@ -28,7 +28,7 @@ describe('drawing/DrawingThread', () => {
             }),
             fileVersionId: 1,
             location: {},
-            threadID: 2,
+            threadId: 2,
             type: 'draw'
         });
     });
@@ -75,7 +75,7 @@ describe('drawing/DrawingThread', () => {
     describe('deleteThread()', () => {
         it('should delete all attached annotations, clear the drawn rectangle, and call destroy', () => {
             sandbox.stub(thread, 'getBrowserRectangularBoundary').returns(['a', 'b', 'c', 'd']);
-            sandbox.stub(thread, 'deleteAnnotationWithID');
+            sandbox.stub(thread, 'deleteAnnotationWithId');
             sandbox.stub(thread, 'clearBoundary');
             thread.concreteContext = {
                 clearRect: sandbox.stub()
@@ -92,7 +92,7 @@ describe('drawing/DrawingThread', () => {
             expect(thread.getBrowserRectangularBoundary).to.be.called;
             expect(thread.concreteContext.clearRect).to.be.called;
             expect(thread.clearBoundary).to.be.called;
-            expect(thread.deleteAnnotationWithID).to.be.calledWith({ annotationID: '123abc' });
+            expect(thread.deleteAnnotationWithId).to.be.calledWith({ annotationId: '123abc' });
             expect(thread.pathContainer).to.equal(null);
         });
     });

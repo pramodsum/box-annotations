@@ -351,7 +351,7 @@ describe('controllers/DrawingModeController', () => {
 
     describe('renderPage()', () => {
         const thread = {
-            threadID: '123abc',
+            threadId: '123abc',
             location: { page: 1 },
             show: () => {},
             addListener: () => {}

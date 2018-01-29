@@ -243,11 +243,11 @@ class AnnotationDialog extends EventEmitter {
     /**
      * Removes an annotation from the dialog.
      *
-     * @param {string} annotationID ID of annotation to remove
+     * @param {string} annotationId Id of annotation to remove
      * @return {void}
      */
-    removeAnnotation(annotationID) {
-        const annotationEl = this.element.querySelector(`[data-annotation-id="${annotationID}"]`);
+    removeAnnotation(annotationId) {
+        const annotationEl = this.element.querySelector(`[data-annotation-id="${annotationId}"]`);
         if (annotationEl) {
             annotationEl.parentNode.removeChild(annotationEl);
         }
@@ -460,11 +460,11 @@ class AnnotationDialog extends EventEmitter {
      * Enable all buttons for the temporary annotation element
      *
      * @protected
-     * @param {string} annotationID Annotation of saved annotation element
+     * @param {string} annotationId Annotation of saved annotation element
      * @return {void}
      */
-    enable(annotationID) {
-        const annotationEl = this.element.querySelector(`[data-annotation-id="${annotationID}"]`);
+    enable(annotationId) {
+        const annotationEl = this.element.querySelector(`[data-annotation-id="${annotationId}"]`);
         if (!annotationEl) {
             return;
         }
@@ -479,11 +479,11 @@ class AnnotationDialog extends EventEmitter {
      * Disable all buttons for the temporary annotation element
      *
      * @protected
-     * @param {string} tempAnnotationID Annotation of temporary annotation element
+     * @param {string} tempAnnotationId Annotation of temporary annotation element
      * @return {void}
      */
-    disable(tempAnnotationID) {
-        const annotationEl = this.element.querySelector(`[data-annotation-id="${tempAnnotationID}"]`);
+    disable(tempAnnotationId) {
+        const annotationEl = this.element.querySelector(`[data-annotation-id="${tempAnnotationId}"]`);
         if (!annotationEl) {
             return;
         }
@@ -542,7 +542,7 @@ class AnnotationDialog extends EventEmitter {
 
         const eventTarget = event.target;
         const dataType = util.findClosestDataType(eventTarget);
-        const annotationID = util.findClosestDataType(eventTarget, 'data-annotation-id');
+        const annotationId = util.findClosestDataType(eventTarget, 'data-annotation-id');
 
         switch (dataType) {
             // Clicking 'Post' button to create an annotation
@@ -572,15 +572,15 @@ class AnnotationDialog extends EventEmitter {
                 break;
             // Clicking trash icon to initiate deletion
             case constants.DATA_TYPE_DELETE:
-                this.showDeleteConfirmation(annotationID);
+                this.showDeleteConfirmation(annotationId);
                 break;
             // Clicking 'Cancel' button to cancel deletion
             case constants.DATA_TYPE_CANCEL_DELETE:
-                this.hideDeleteConfirmation(annotationID);
+                this.hideDeleteConfirmation(annotationId);
                 break;
             // Clicking 'Delete' button to confirm deletion
             case constants.DATA_TYPE_CONFIRM_DELETE: {
-                this.deleteAnnotation(annotationID);
+                this.deleteAnnotation(annotationId);
                 break;
             }
 
@@ -620,7 +620,7 @@ class AnnotationDialog extends EventEmitter {
 
         const annotationEl = document.createElement('div');
         annotationEl.classList.add(CLASS_COMMENT);
-        annotationEl.setAttribute('data-annotation-id', annotation.annotationID);
+        annotationEl.setAttribute('data-annotation-id', annotation.annotationId);
 
         const annotationContainerEl = this.dialogEl.querySelector(`.${CLASS_COMMENTS_CONTAINER}`);
         annotationContainerEl.appendChild(annotationEl);
@@ -821,11 +821,11 @@ class AnnotationDialog extends EventEmitter {
      * Shows delete confirmation.
      *
      * @private
-     * @param {string} annotationID ID of annotation to delete
+     * @param {string} annotationId Id of annotation to delete
      * @return {void}
      */
-    showDeleteConfirmation(annotationID) {
-        const annotationEl = this.element.querySelector(`[data-annotation-id="${annotationID}"]`);
+    showDeleteConfirmation(annotationId) {
+        const annotationEl = this.element.querySelector(`[data-annotation-id="${annotationId}"]`);
         const deleteConfirmationEl = annotationEl.querySelector(`.${CLASS_DELETE_CONFIRMATION}`);
         const cancelDeleteButtonEl = annotationEl.querySelector(`.${CLASS_CANCEL_DELETE}`);
         const deleteButtonEl = annotationEl.querySelector(constants.SELECTOR_DELETE_COMMENT_BTN);
@@ -838,11 +838,11 @@ class AnnotationDialog extends EventEmitter {
      * Hides delete confirmation.
      *
      * @private
-     * @param {string} annotationID ID of annotation to delete
+     * @param {string} annotationId Id of annotation to delete
      * @return {void}
      */
-    hideDeleteConfirmation(annotationID) {
-        const annotationEl = this.element.querySelector(`[data-annotation-id="${annotationID}"]`);
+    hideDeleteConfirmation(annotationId) {
+        const annotationEl = this.element.querySelector(`[data-annotation-id="${annotationId}"]`);
         const deleteConfirmationEl = annotationEl.querySelector(`.${CLASS_DELETE_CONFIRMATION}`);
         const deleteButtonEl = annotationEl.querySelector(constants.SELECTOR_DELETE_COMMENT_BTN);
         util.showElement(deleteButtonEl);
@@ -854,11 +854,11 @@ class AnnotationDialog extends EventEmitter {
      * Broadcasts message to delete an annotation.
      *
      * @private
-     * @param {string} annotationID ID of annotation to delete
+     * @param {string} annotationId Id of annotation to delete
      * @return {void}
      */
-    deleteAnnotation(annotationID) {
-        this.emit('annotationdelete', { annotationID });
+    deleteAnnotation(annotationId) {
+        this.emit('annotationdelete', { annotationId });
     }
 
     /**

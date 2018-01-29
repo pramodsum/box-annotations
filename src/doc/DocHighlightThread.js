@@ -119,12 +119,12 @@ class DocHighlightThread extends AnnotationThread {
     /**
      * Deletes an annotation.
      *
-     * @param {string} annotationID ID of annotation to delete
+     * @param {string} annotationId Id of annotation to delete
      * @param {boolean} [useServer] Whether or not to delete on server, default true
      * @return {void}
      */
-    deleteAnnotation(annotationID, useServer = true) {
-        super.deleteAnnotation(annotationID, useServer);
+    deleteAnnotation(annotationId, useServer = true) {
+        super.deleteAnnotation(annotationId, useServer);
 
         // Hide delete button on plain highlights if user doesn't have
         // permissions
@@ -390,7 +390,7 @@ class DocHighlightThread extends AnnotationThread {
 
     /**
      * Delete the annotation annotation or the thread's first annotation based on
-     * if an annotationID is specified on 'annotationdelete'
+     * if an annotationId is specified on 'annotationdelete'
      *
      * @private
      * @param {Object} data Event data
@@ -398,13 +398,13 @@ class DocHighlightThread extends AnnotationThread {
      */
     handleDelete(data) {
         if (data) {
-            this.deleteAnnotation(data.annotationID);
+            this.deleteAnnotation(data.annotationId);
             return;
         }
 
         const firstAnnotation = util.getFirstAnnotation(this.annotations);
         if (firstAnnotation) {
-            this.deleteAnnotation(firstAnnotation.annotationID);
+            this.deleteAnnotation(firstAnnotation.annotationId);
         }
     }
 

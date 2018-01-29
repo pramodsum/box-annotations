@@ -308,11 +308,11 @@ export function isElementInViewport(element) {
 
 /**
  * Returns avatar image HTML for annotation dialog. This will be either an
- * image with the supplied avatar URL as a source if there is a URL passed in
+ * image with the supplied avatar Url as a source if there is a Url passed in
  * or one generated using the initials of the annotator.
  *
- * @param {string} avatarUrl URL of avatar photo
- * @param {string} userId User ID of annotator
+ * @param {string} avatarUrl Url of avatar photo
+ * @param {string} userId User Id of annotator
  * @param {string} userName Username of annotator
  * @param {string} altText Alternate text if profile picture is not available
  * @return {string} HTML for profile image
@@ -368,8 +368,8 @@ export function getFirstAnnotation(annotations) {
  */
 export function getLastAnnotation(annotations) {
     const numAnnotations = Object.keys(annotations).length;
-    const lastAnnotationID = Object.keys(annotations)[numAnnotations - 1];
-    return annotations[lastAnnotationID];
+    const lastAnnotationId = Object.keys(annotations)[numAnnotations - 1];
+    return annotations[lastAnnotationId];
 }
 
 /**

@@ -34,7 +34,7 @@ describe('doc/DocHighlightThread', () => {
             }),
             fileVersionId: 1,
             location: {},
-            threadID: 2,
+            threadId: 2,
             type: 'highlight',
             permissions: {
                 canAnnotate: true,
@@ -176,7 +176,7 @@ describe('doc/DocHighlightThread', () => {
                 }),
                 fileVersionId: 1,
                 location: {},
-                threadID: 2,
+                threadId: 2,
                 type: 'highlight',
                 permissions: {
                     canAnnotate: true,
@@ -210,7 +210,7 @@ describe('doc/DocHighlightThread', () => {
                 }),
                 fileVersionId: 1,
                 location: {},
-                threadID: 2,
+                threadId: 2,
                 type: 'highlight',
                 permissions: {
                     canAnnotate: true,
@@ -496,15 +496,15 @@ describe('doc/DocHighlightThread', () => {
         beforeEach(() => {
             sandbox.stub(thread, 'deleteAnnotation');
             sandbox.stub(thread.dialog, 'toggleHighlightCommentsReply');
-            thread.annotations = { 1: { annotationID: 1 }, 2: { annotationID: 2 }, 3: {} };
+            thread.annotations = { 1: { annotationId: 1 }, 2: { annotationId: 2 }, 3: {} };
         });
 
-        it('should delete the specified annotationID', () => {
-            thread.handleDelete({ annotationID: 2 });
+        it('should delete the specified annotationId', () => {
+            thread.handleDelete({ annotationId: 2 });
             expect(thread.deleteAnnotation).to.be.calledWith(2);
         });
 
-        it('should delete the first annotation in the thread if no annotationID is provided', () => {
+        it('should delete the first annotation in the thread if no annotationId is provided', () => {
             thread.handleDelete();
             expect(thread.deleteAnnotation).to.be.calledWith(1);
         });

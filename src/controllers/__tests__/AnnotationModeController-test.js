@@ -21,7 +21,7 @@ describe('controllers/AnnotationModeController', () => {
     beforeEach(() => {
         controller = new AnnotationModeController();
         stubs.thread = {
-            threadID: '123abc',
+            threadId: '123abc',
             location: { page: 1 },
             type: 'type',
             state: STATES.pending,
@@ -359,16 +359,16 @@ describe('controllers/AnnotationModeController', () => {
         });
     });
 
-    describe('getThreadByID()', () => {
-        it('should find and return annotation thread specified by threadID', () => {
+    describe('getThreadById()', () => {
+        it('should find and return annotation thread specified by threadId', () => {
             controller.registerThread(stubs.thread);
-            const thread = controller.getThreadByID(stubs.thread.threadID);
+            const thread = controller.getThreadById(stubs.thread.threadId);
             expect(thread).to.deep.equals(stubs.thread);
         });
 
         it('should return undefined if specified annotation thread is invalid', () => {
             controller.registerThread(stubs.thread);
-            const thread = controller.getThreadByID('random');
+            const thread = controller.getThreadById('random');
             expect(thread).to.be.undefined;
         });
     });
@@ -537,7 +537,7 @@ describe('controllers/AnnotationModeController', () => {
         it('should destroy only pending threads, and return true', () => {
             stubs.thread.state = 'NOT_PENDING';
             const pendingThread = {
-                threadID: '456def',
+                threadId: '456def',
                 location: { page: 1 },
                 type: 'type',
                 state: STATES.pending,
