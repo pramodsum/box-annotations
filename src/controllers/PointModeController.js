@@ -9,7 +9,7 @@ import {
     SELECTOR_POINT_MODE_HEADER,
     SELECTOR_ANNOTATION_BUTTON_POINT_EXIT
 } from '../constants';
-import CreateAnnotationDialog from '../CreateAnnotationDialog';
+import CreateAnnotationDialog from './CreateAnnotationDialog';
 import { isInDialog, replaceHeader } from '../util';
 
 class PointModeController extends AnnotationModeController {
@@ -45,19 +45,16 @@ class PointModeController extends AnnotationModeController {
         this.exitButtonEl.textContent = this.localized.closeButton || 'Close';
     }
 
-    /**
-     * Set up the shared mobile dialog and associated listeners
-     *
-     * @protected
-     * @param {HTMLElement} container - The container element for the file
-     * @param {Object} options - Controller options to pass into the create dialog
-     * @return {void}
-     */
-    setupSharedDialog(container, options) {
-        this.createDialog = new CreateAnnotationDialog(container, {
-            isMobile: options.isMobile,
-            hasTouch: options.hasTouch,
-            localized: options.localized
+    /** @inheritdoc */
+    setupSharedDialog() {
+        if (!this.isMobile) {
+            return;
+        }
+
+        this.createDialog = new CreateAnnotationDialog(this.container, {
+            isMobile: this.isMobile,
+            hasTouch: this.hasTouch,
+            localized: this.localized
         });
         this.createDialog.createElement();
 
@@ -203,7 +200,7 @@ class PointModeController extends AnnotationModeController {
         }
 
         if (this.isMobile) {
-            this.lastPointEvent = event;
+            this.lastEvent = event;
             this.pendingThreadID = thread.threadID;
 
             this.container.appendChild(this.createDialog.containerEl);

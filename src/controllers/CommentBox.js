@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
-import * as constants from './constants';
-import { hideElement, showElement, focusTextArea } from './util';
+import * as constants from '../constants';
+import { hideElement, showElement, focusTextArea } from '../util';
 
 class CommentBox extends EventEmitter {
     /**
