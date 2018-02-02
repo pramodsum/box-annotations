@@ -1,25 +1,56 @@
 import AnnotationModeController from './AnnotationModeController';
+import CreateHighlightDialog from './CreateHighlightDialog';
 import { clearCanvas, getFirstAnnotation } from '../util';
 import {
     THREAD_EVENT,
     CONTROLLER_EVENT,
     TYPES,
+    CREATE_EVENT,
     CLASS_ANNOTATION_LAYER_HIGHLIGHT,
     CLASS_ANNOTATION_LAYER_HIGHLIGHT_COMMENT
 } from '../constants';
 
 class HighlightModeController extends AnnotationModeController {
-    /**
-     * Handles annotation thread events and emits them to the viewer
-     *
-     * @inheritdoc
-     * @private
-     * @param {AnnotationThread} thread - The thread that emitted the event
-     * @param {Object} [data] - Annotation thread event data
-     * @param {string} [data.event] - Annotation thread event
-     * @param {string} [data.data] - Annotation thread event data
-     * @return {void}
-     */
+    /** @inheritdoc */
+    setupSharedDialog() {
+        this.allowComment = !!(this.mode === TYPES.highlight_comment);
+        this.allowHighlight = !!(this.mode === TYPES.highlight);
+
+        this.createDialog = new CreateHighlightDialog(this.container, {
+            isMobile: this.isMobile,
+            hasTouch: this.hasTouch,
+            allowComment: this.allowComment,
+            allowHighlight: this.allowHighlight,
+            localized: this.localized
+        });
+        this.createDialog.createElement();
+
+        this.onDialogPendingComment = this.onDialogPendingComment.bind(this);
+        this.onDialogPost = this.onDialogPost.bind(this);
+        this.destroyPendingThreads = this.destroyPendingThreads.bind(this);
+
+        this.createDialog.addListener(CREATE_EVENT.init, () => this.onDialogPendingComment);
+
+        if (this.allowComment) {
+            this.createDialog.addListener(CREATE_EVENT.comment, this.onDialogPendingComment);
+            this.createDialog.addListener(CREATE_EVENT.post, this.onDialogPost);
+        }
+
+        if (this.allowHighlight) {
+            this.createDialog.addListener(CREATE_EVENT.plain, this.onDialogPost);
+        }
+    }
+
+    /** @inheritdoc */
+    destroy() {
+        this.createDialog.removeListener(CREATE_EVENT.comment, this.onDialogPendingComment);
+        this.createDialog.removeListener(CREATE_EVENT.post, this.onDialogPost);
+        this.createDialog.removeListener(CREATE_EVENT.plain, this.onDialogPost);
+
+        super.destroy();
+    }
+
+    /** @inheritdoc */
     handleThreadEvents(thread, data) {
         let firstAnnotation;
         switch (data.event) {
@@ -35,7 +66,9 @@ class HighlightModeController extends AnnotationModeController {
                 }
                 break;
             case THREAD_EVENT.threadCleanup:
-                this.emit(CONTROLLER_EVENT.renderPage, thread.location.page);
+                if (thread && thread.location) {
+                    this.renderPage(thread.location.page);
+                }
                 break;
             default:
         }
@@ -43,12 +76,7 @@ class HighlightModeController extends AnnotationModeController {
         super.handleThreadEvents(thread, data);
     }
 
-    /**
-     * Disables the specified annotation mode
-     *
-     * @inheritdoc
-     * @return {void}
-     */
+    /** @inheritdoc */
     exit() {
         this.destroyPendingThreads();
         window.getSelection().removeAllRanges();
@@ -56,37 +84,19 @@ class HighlightModeController extends AnnotationModeController {
         this.emit(CONTROLLER_EVENT.bindDOMListeners);
     }
 
-    /**
-     * Enables the specified annotation mode
-     *
-     * @inheritdoc
-     * @return {void}
-     */
+    /** @inheritdoc */
     enter() {
         this.emit(CONTROLLER_EVENT.unbindDOMListeners); // Disable other annotations
         this.bindListeners(); // Enable mode
     }
 
-    /**
-     * Renders annotations from memory.
-     *
-     * @inheritdoc
-     * @private
-     * @return {void}
-     */
+    /** @inheritdoc */
     render() {
         super.render();
         this.destroyPendingThreads();
     }
 
-    /**
-     * Renders annotations from memory for a specified page.
-     *
-     * @inheritdoc
-     * @private
-     * @param {number} pageNum - Page number
-     * @return {void}
-     */
+    /** @inheritdoc */
     renderPage(pageNum) {
         // Clear context if needed
         const pageEl = this.annotatedElement.querySelector(`[data-page-number="${pageNum}"]`);

@@ -9,7 +9,6 @@ import Annotator from '../Annotator';
 import DocHighlightThread from './DocHighlightThread';
 import DocPointThread from './DocPointThread';
 import DocDrawingThread from './DocDrawingThread';
-import CreateHighlightDialog from './CreateHighlightDialog';
 import * as util from '../util';
 import * as docUtil from './docUtil';
 import {
@@ -19,14 +18,10 @@ import {
     DATA_TYPE_ANNOTATION_INDICATOR,
     PAGE_PADDING_TOP,
     PAGE_PADDING_BOTTOM,
-    CLASS_ANNOTATION_LAYER_HIGHLIGHT,
-    CLASS_ANNOTATION_LAYER_HIGHLIGHT_COMMENT,
-    CLASS_ANNOTATION_LAYER_DRAW,
     CLASS_ANNOTATION_PLAIN_HIGHLIGHT,
     THREAD_EVENT,
     ANNOTATOR_EVENT,
-    CONTROLLER_EVENT,
-    CREATE_EVENT
+    CONTROLLER_EVENT
 } from '../constants';
 
 const MOUSEMOVE_THROTTLE_MS = 25;
@@ -41,12 +36,6 @@ const CLASS_DEFAULT_CURSOR = 'bp-use-default-cursor';
 // Required by rangy highlighter
 const ID_ANNOTATED_ELEMENT = 'bp-rangy-annotated-element';
 
-const ANNOTATION_LAYER_CLASSES = [
-    CLASS_ANNOTATION_LAYER_HIGHLIGHT,
-    CLASS_ANNOTATION_LAYER_HIGHLIGHT_COMMENT,
-    CLASS_ANNOTATION_LAYER_DRAW
-];
-
 class DocAnnotator extends Annotator {
     /** @property {Event} - For tracking the most recent event fired by mouse move event. */
     mouseMoveEvent;
@@ -59,9 +48,6 @@ class DocAnnotator extends Annotator {
 
     /** @property {number} - Timer used to throttle highlight event process. */
     throttleTimer = 0;
-
-    /** @property {CreateHighlightDialog} - UI used to create new highlight annotations. */
-    createHighlightDialog;
 
     /** @property {Event} - For delaying creation of highlight quad points and dialog. Tracks the
      * current selection event, made in a previous event. */
@@ -81,30 +67,6 @@ class DocAnnotator extends Annotator {
 
     /** @property {Function} - Reference to filter function that has been bound TODO(@jholdstock): remove on refactor. */
     showFirstDialogFilter;
-
-    /**
-     * [destructor]
-     *
-     * @return {void}
-     */
-    destroy() {
-        super.destroy();
-        if (!this.createHighlightDialog) {
-            return;
-        }
-
-        if (this.commentHighlightEnabled) {
-            this.createHighlightDialog.removeListener(CREATE_EVENT.comment, this.highlightCurrentSelection);
-            this.createHighlightDialog.removeListener(CREATE_EVENT.post, this.createHighlightThread);
-        }
-
-        if (this.plainHighlightEnabled) {
-            this.createHighlightDialog.removeListener(CREATE_EVENT.plain, this.createPlainHighlight);
-        }
-
-        this.createHighlightDialog.destroy();
-        this.createHighlightDialog = null;
-    }
 
     /** @inheritdoc */
     init(initialScale) {
@@ -273,41 +235,6 @@ class DocAnnotator extends Annotator {
         return thread;
     }
 
-    /**
-     * Override to factor in highlight types being filtered out, if disabled. Also scales annotation canvases.
-     *
-     * @override
-     * @param {number} pageNum Page number
-     * @return {void}
-     */
-    renderPage(pageNum) {
-        // Scale existing canvases on re-render
-        this.scaleAnnotationCanvases(pageNum);
-        super.renderPage(pageNum);
-
-        if (this.createHighlightDialog && this.createHighlightDialog.isVisible) {
-            this.createHighlightDialog.hide();
-        }
-    }
-
-    /**
-     * Scales all annotation canvases for a specified page.
-     *
-     * @override
-     * @param {number} pageNum Page number
-     * @return {void}
-     */
-    scaleAnnotationCanvases(pageNum) {
-        const pageEl = this.annotatedElement.querySelector(`[data-page-number="${pageNum}"]`);
-
-        ANNOTATION_LAYER_CLASSES.forEach((annotationLayerClass) => {
-            const annotationLayerEl = pageEl.querySelector(`canvas.${annotationLayerClass}`);
-            if (annotationLayerEl) {
-                docUtil.scaleCanvas(pageEl, annotationLayerEl);
-            }
-        });
-    }
-
     //--------------------------------------------------------------------------
     // Protected
     //--------------------------------------------------------------------------
@@ -345,31 +272,6 @@ class DocAnnotator extends Annotator {
 
         if (this.isMobile || this.hasTouch) {
             this.onSelectionChange = this.onSelectionChange.bind(this);
-        }
-
-        this.createHighlightDialog = new CreateHighlightDialog(this.container, {
-            isMobile: this.isMobile,
-            hasTouch: this.hasTouch,
-            allowComment: this.commentHighlightEnabled,
-            allowHighlight: this.plainHighlightEnabled,
-            localized: this.localized
-        });
-
-        this.createHighlightDialog.addListener(CREATE_EVENT.init, () =>
-            this.emit(THREAD_EVENT.pending, TYPES.highlight)
-        );
-
-        if (this.commentHighlightEnabled) {
-            this.highlightCurrentSelection = this.highlightCurrentSelection.bind(this);
-            this.createHighlightDialog.addListener(CREATE_EVENT.comment, this.highlightCurrentSelection);
-
-            this.createHighlightThread = this.createHighlightThread.bind(this);
-            this.createHighlightDialog.addListener(CREATE_EVENT.post, this.createHighlightThread);
-        }
-
-        if (this.plainHighlightEnabled) {
-            this.createPlainHighlight = this.createPlainHighlight.bind(this);
-            this.createHighlightDialog.addListener(CREATE_EVENT.plain, this.createPlainHighlight);
         }
 
         // Init rangy and rangy highlight
@@ -503,9 +405,9 @@ class DocAnnotator extends Annotator {
             return null;
         }
 
-        const isCreateDialogVisible = this.createHighlightDialog && this.createHighlightDialog.isVisible;
-        if (isCreateDialogVisible) {
-            this.createHighlightDialog.hide();
+        const createDialog = util.isCreateDialogVisible(this.modeControllers);
+        if (createDialog) {
+            createDialog.hide();
         }
 
         this.isCreatingHighlight = false;
@@ -576,17 +478,21 @@ class DocAnnotator extends Annotator {
             this.highlighter.removeAllHighlights();
         }
 
+        const createDialog = this.plainHighlightEnabled
+            ? this.modeControllers[TYPES.highlight].createDialog
+            : this.modeControllers[TYPES.highlight_comment].createDialog;
+
         // Bail if mid highlight and tapping on the screen
         if (!docUtil.isValidSelection(selection)) {
             this.lastHighlightEvent = null;
-            this.createHighlightDialog.hide();
+            createDialog.hide();
             this.highlighter.removeAllHighlights();
             return;
         }
 
         this.selectionEndTimeout = setTimeout(() => {
-            if (this.createHighlightDialog) {
-                this.createHighlightDialog.show(this.container, selection);
+            if (!createDialog.isVisible) {
+                createDialog.show(this.container);
             }
         }, SELECTION_TIMEOUT);
 
@@ -830,13 +736,11 @@ class DocAnnotator extends Annotator {
             this.highlighter.removeAllHighlights();
         }
 
-        const isCreateDialogVisible = this.createHighlightDialog && this.createHighlightDialog.isVisible;
-        if (isCreateDialogVisible) {
-            this.createHighlightDialog.hide();
+        const createDialog = util.isCreateDialogVisible(this.modeControllers);
+        if (createDialog) {
+            createDialog.hide();
             document.getSelection().removeAllRanges();
         }
-
-        this.isCreatingHighlight = false;
 
         // Prevent the creation of highlights if the user is currently creating a point annotation
         const pointController = this.modeControllers[TYPES.point];
@@ -848,7 +752,7 @@ class DocAnnotator extends Annotator {
         // event we would listen to, selectionchange, fires continuously and
         // is unreliable. If the mouse moved or we double clicked text,
         // we trigger the create handler instead of the click handler
-        if (this.createHighlightDialog && (this.didMouseMove || event.type === 'dblclick')) {
+        if (this.didMouseMove || event.type === 'dblclick') {
             this.highlightCreateHandler(event);
         } else {
             this.highlightClickHandler(event);
@@ -858,11 +762,11 @@ class DocAnnotator extends Annotator {
     /**
      * Handler for creating a pending highlight thread from the current
      * selection. Default creates highlight threads as ANNOTATION_TYPE_HIGHLIGHT.
-     * If the user adds a comment, the type changes to
-     * ANNOTATION_TYPE_HIGHLIGHT_COMMENT.
+     * If the user adds a comment, the type changes to ANNOTATION_TYPE_HIGHLIGHT_COMMENT.
      *
      * @private
      * @param {Event} event DOM event
+     * @param {CreateHighlightDialog} createDialog Create highlight dialog object
      * @return {void}
      */
     highlightCreateHandler(event) {
@@ -880,7 +784,11 @@ class DocAnnotator extends Annotator {
         }
 
         const dialogParentEl = this.isMobile ? this.container : pageEl;
-        this.createHighlightDialog.show(dialogParentEl, selection);
+
+        const createDialog = this.plainHighlightEnabled
+            ? this.modeControllers[TYPES.highlight].createDialog
+            : this.modeControllers[TYPES.highlight_comment].createDialog;
+        createDialog.show(dialogParentEl, selection);
 
         this.isCreatingHighlight = true;
         this.lastHighlightEvent = event;
@@ -1005,22 +913,30 @@ class DocAnnotator extends Annotator {
      * @return {void}
      */
     handleControllerEvents(data) {
-        const isCreateDialogVisible = this.createHighlightDialog && this.createHighlightDialog.isVisible;
-
         switch (data.event) {
             case CONTROLLER_EVENT.toggleMode:
-                if (isCreateDialogVisible) {
-                    document.getSelection().removeAllRanges();
-                    this.createHighlightDialog.hide();
-                }
-                break;
-            case CONTROLLER_EVENT.bindDOMListeners:
-                if (isCreateDialogVisible) {
-                    this.createHighlightDialog.hide();
-                }
+                document.getSelection().removeAllRanges();
                 break;
             case CONTROLLER_EVENT.renderPage:
                 this.renderPage(data.data);
+                break;
+            case CONTROLLER_EVENT.createThread:
+                if (!util.isHighlightAnnotation(data.mode)) {
+                    return;
+                }
+
+                if (data.data && !data.data.commentText) {
+                    this.createPlainHighlight();
+                } else {
+                    this.createHighlightThread(data.data.commentText);
+                }
+                break;
+            case CONTROLLER_EVENT.createPendingThread:
+                if (!util.isHighlightAnnotation(data.mode)) {
+                    return;
+                }
+
+                this.highlightCurrentSelection();
                 break;
             case CONTROLLER_EVENT.unregister:
                 if (!data.data || !util.isHighlightAnnotation(data.data.type)) {

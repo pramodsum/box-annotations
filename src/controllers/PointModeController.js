@@ -1,6 +1,6 @@
 import AnnotationModeController from './AnnotationModeController';
 import { TYPES, THREAD_EVENT, CONTROLLER_EVENT, CREATE_EVENT } from '../constants';
-import CreateAnnotationDialog from '../CreateAnnotationDialog';
+import CreateAnnotationDialog from './CreateAnnotationDialog';
 
 class PointModeController extends AnnotationModeController {
     /** @property {HTMLElement} - The button to cancel the pending thread */
@@ -9,19 +9,16 @@ class PointModeController extends AnnotationModeController {
     /** @property {HTMLElement} - The button to commit the pending thread */
     postButtonEl;
 
-    /**
-     * Set up the shared mobile dialog and associated listeners
-     *
-     * @protected
-     * @param {HTMLElement} container - The container element for the file
-     * @param {Object} options - Controller options to pass into the create dialog
-     * @return {void}
-     */
-    setupSharedDialog(container, options) {
-        this.createDialog = new CreateAnnotationDialog(container, {
-            isMobile: options.isMobile,
-            hasTouch: options.hasTouch,
-            localized: options.localized
+    /** @inheritdoc */
+    setupSharedDialog() {
+        if (!this.isMobile) {
+            return;
+        }
+
+        this.createDialog = new CreateAnnotationDialog(this.container, {
+            isMobile: this.isMobile,
+            hasTouch: this.hasTouch,
+            localized: this.localized
         });
         this.createDialog.createElement();
 
@@ -48,47 +45,7 @@ class PointModeController extends AnnotationModeController {
         this.hideSharedDialog();
     }
 
-    /**
-     * Notify listeners of post event and then clear the create dialog
-     *
-     * @private
-     * @param {string} commentText Annotation comment text
-     * @return {void}
-     */
-    onDialogPost(commentText) {
-        this.emit(CONTROLLER_EVENT.createThread, {
-            commentText,
-            lastPointEvent: this.lastPointEvent,
-            pendingThreadID: this.pendingThreadID
-        });
-
-        this.hideSharedDialog();
-    }
-
-    /**
-     * Hides the shared mobile dialog and clears associated data
-     *
-     * @protected
-     * @return {void}
-     */
-    hideSharedDialog() {
-        this.lastPointEvent = null;
-        this.pendingThreadID = null;
-
-        if (this.createDialog && this.createDialog.isVisible) {
-            this.createDialog.hide();
-        }
-    }
-
-    /**
-     * Set up and return the necessary handlers for the annotation mode
-     *
-     * @inheritdoc
-     * @protected
-     * @return {Array} An array where each element is an object containing
-     * the object that will emit the event, the type of events to listen
-     * for, and the callback
-     */
+    /** @inheritdoc */
     setupHandlers() {
         this.pointClickHandler = this.pointClickHandler.bind(this);
         // Get handlers
@@ -141,7 +98,7 @@ class PointModeController extends AnnotationModeController {
         }
 
         if (this.isMobile) {
-            this.lastPointEvent = event;
+            this.lastEvent = event;
             this.pendingThreadID = thread.threadID;
 
             this.container.appendChild(this.createDialog.containerEl);

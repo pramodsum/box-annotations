@@ -254,15 +254,6 @@ class Annotator extends EventEmitter {
 
             controller.addListener('annotationcontrollerevent', this.handleControllerEvents);
         });
-
-        const pointController = this.modeControllers[TYPES.point];
-        if (pointController && this.isMobile) {
-            pointController.setupSharedDialog(this.container, {
-                isMobile: this.isMobile,
-                hasTouch: this.hasTouch,
-                localized: this.localized
-            });
-        }
     }
 
     /**
@@ -474,18 +465,18 @@ class Annotator extends EventEmitter {
      * @param {Object} data - Thread data
      * @param {string} data.commentText - The text for the first comment in
      * the thread.
-     * @param {string} data.lastPointEvent - Point event for the annotation location
+     * @param {string} data.lastEvent - Point event for the annotation location
      * @param {string} data.pendingThreadID - Thread ID for the current pending point thread
      * @return {AnnotationThread} Created point annotation thread
      */
     createPointThread(data) {
         // Empty string will be passed in if no text submitted in comment
-        const { commentText, lastPointEvent, pendingThreadID } = data;
-        if (!lastPointEvent || !pendingThreadID || !commentText || commentText.trim() === '') {
+        const { commentText, lastEvent, pendingThreadID } = data;
+        if (!lastEvent || !pendingThreadID || !commentText || commentText.trim() === '') {
             return null;
         }
 
-        const location = this.getLocationFromEvent(lastPointEvent, TYPES.point);
+        const location = this.getLocationFromEvent(lastEvent, TYPES.point);
         if (!location) {
             return null;
         }
@@ -516,10 +507,7 @@ class Annotator extends EventEmitter {
      * @return {void}
      */
     render() {
-        Object.keys(this.modeControllers).forEach((mode) => {
-            const controller = this.modeControllers[mode];
-            controller.render();
-        });
+        Object.keys(this.modeControllers).forEach((mode) => this.modeControllers[mode].render());
     }
 
     /**
@@ -575,6 +563,11 @@ class Annotator extends EventEmitter {
 
         if (currentMode !== mode) {
             this.modeControllers[mode].enter();
+        }
+
+        const createDialog = util.isCreateDialogVisible(this.modeControllers);
+        if (createDialog) {
+            createDialog.hide();
         }
     }
 
@@ -681,7 +674,9 @@ class Annotator extends EventEmitter {
                 this.bindDOMListeners();
                 break;
             case CONTROLLER_EVENT.createThread:
-                this.createPointThread(data.data);
+                if (data.mode === TYPES.point) {
+                    this.createPointThread(data.data);
+                }
                 break;
             default:
                 this.emit(data.event, data.data);

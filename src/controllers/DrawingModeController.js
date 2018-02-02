@@ -34,13 +34,7 @@ class DrawingModeController extends AnnotationModeController {
     /** @property {HTMLElement} - The button to redo a stroke on the pending drawing thread */
     redoButtonEl;
 
-    /**
-     * Initializes mode controller.
-     *
-     * @inheritdoc
-     * @param {Object} data - Options for constructing a controller
-     * @return {void}
-     */
+    /** @inheritdoc */
     init(data) {
         super.init(data);
 
@@ -60,12 +54,7 @@ class DrawingModeController extends AnnotationModeController {
         this.handleSelection = this.handleSelection.bind(this);
     }
 
-    /**
-     * Disables the specified annotation mode
-     *
-     * @inheritdoc
-     * @return {void}
-     */
+    /** @inheritdoc */
     exit() {
         this.emit(CONTROLLER_EVENT.exit, { headerSelector: SELECTOR_BOX_PREVIEW_BASE_HEADER });
 
@@ -78,12 +67,7 @@ class DrawingModeController extends AnnotationModeController {
         this.emit(CONTROLLER_EVENT.bindDOMListeners);
     }
 
-    /**
-     * Enables the specified annotation mode
-     *
-     * @inheritdoc
-     * @return {void}
-     */
+    /** @inheritdoc */
     enter() {
         this.annotatedElement.classList.add(CLASS_ANNOTATION_MODE);
         this.annotatedElement.classList.add(CLASS_ANNNOTATION_DRAWING_BACKGROUND);
@@ -95,13 +79,7 @@ class DrawingModeController extends AnnotationModeController {
         this.bindListeners(); // Enable mode
     }
 
-    /**
-     * Bind the DOM listeners for this mode
-     *
-     * @inheritdoc
-     * @public
-     * @return {void}
-     */
+    /** @inheritdoc */
     bindDOMListeners() {
         if (this.isMobile && this.hasTouch) {
             this.annotatedElement.addEventListener('touchstart', this.handleSelection);
@@ -110,13 +88,7 @@ class DrawingModeController extends AnnotationModeController {
         }
     }
 
-    /**
-     * Unbind the DOM listeners for this mode
-     *
-     * @inheritdoc
-     * @public
-     * @return {void}
-     */
+    /** @inheritdoc */
     unbindDOMListeners() {
         if (this.isMobile && this.hasTouch) {
             this.annotatedElement.removeEventListener('touchstart', this.handleSelection);
@@ -125,25 +97,13 @@ class DrawingModeController extends AnnotationModeController {
         }
     }
 
-    /**
-     * Bind the mode listeners and store each handler for future unbinding
-     *
-     * @inheritdoc
-     * @public
-     * @return {void}
-     */
+    /** @inheritdoc */
     bindListeners() {
         super.bindListeners();
         this.unbindDOMListeners();
     }
 
-    /**
-     * Unbind drawing mode listeners. Resets the undo and redo buttons to be disabled if they exist
-     *
-     * @inheritdoc
-     * @protected
-     * @return {void}
-     */
+    /** @inheritdoc */
     unbindListeners() {
         super.unbindListeners();
         this.bindDOMListeners();
@@ -152,15 +112,7 @@ class DrawingModeController extends AnnotationModeController {
         util.disableElement(this.redoButtonEl);
     }
 
-    /**
-     * Set up and return the necessary handlers for the annotation mode
-     *
-     * @inheritdoc
-     * @protected
-     * @return {Array} An array where each element is an object containing
-     * the object that will emit the event, the type of events to listen
-     * for, and the callback
-     */
+    /** @inheritdoc */
     setupHandlers() {
         /* eslint-disable require-jsdoc */
         const locationFunction = (event) => this.annotator.getLocationFromEvent(event, TYPES.point);
@@ -207,15 +159,7 @@ class DrawingModeController extends AnnotationModeController {
         this.pushElementHandler(this.redoButtonEl, 'click', this.currentThread.redo);
     }
 
-    /**
-     * Handle an annotation event.
-     *
-     * @inheritdoc
-     * @protected
-     * @param {AnnotationThread} thread The thread that emitted the event
-     * @param {Object} data Extra data related to the annotation event
-     * @return {void}
-     */
+    /** @inheritdoc */
     handleThreadEvents(thread, data = {}) {
         const { eventData } = data;
         switch (data.event) {
@@ -295,14 +239,7 @@ class DrawingModeController extends AnnotationModeController {
         this.select(selected);
     }
 
-    /**
-     * Renders annotations from memory for a specified page.
-     *
-     * @inheritdoc
-     * @private
-     * @param {number} pageNum - Page number
-     * @return {void}
-     */
+    /** @inheritdoc */
     renderPage(pageNum) {
         // Clear context if needed
         const pageEl = this.annotatedElement.querySelector(`[data-page-number="${pageNum}"]`);
