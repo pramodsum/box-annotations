@@ -1,4 +1,3 @@
-const DEFAULT_WAIT_TIME = 15000; // 15 seconds
 const {
     SAUCE_USERNAME,
     SAUCE_ACCESS_KEY,
@@ -8,22 +7,26 @@ const {
     BROWSER_VERSION = 'latest',
     BROWSER_PLATFORM,
     PLATFORM_VERSION,
-    DEVICE_NAME
+    DEVICE_NAME,
+    DEFAULT_WAIT_TIME = 90000
 } = process.env;
 const MOBILE_PLATFORMS = ['iOS', 'Android'];
 
 // Local selenium config
-const webDriverIOlocal = {
-    url: 'http://localhost:8000',
-    browser: 'chrome',
+const commonConfigObj = {
+    browser: BROWSER_NAME,
+    url: 'http://localhost:8080',
     smartWait: DEFAULT_WAIT_TIME,
-    restart: false,
+    restart: true,
     waitForTimeout: DEFAULT_WAIT_TIME
 };
 
 const helperObj = {};
 if (typeof SAUCE_USERNAME === 'undefined') {
-    helperObj.WebDriverIO = webDriverIOlocal;
+    helperObj.WebDriverIO = commonConfigObj;
+    helperObj.Drawing = {
+        'require': './functional-tests/helpers/drawing_helper.js'
+    };
 } else {
     // Common saucelab config
     const sauceObj = {
@@ -40,7 +43,7 @@ if (typeof SAUCE_USERNAME === 'undefined') {
         }
     };
 
-    const mixedInSauceObj = Object.assign({}, webDriverIOlocal, sauceObj);
+    const mixedInSauceObj = Object.assign({}, commonConfigObj, sauceObj);
     if (MOBILE_PLATFORMS.indexOf(BROWSER_PLATFORM) === -1) {
         // webdriver (desktop)
         Object.assign(sauceObj.desiredCapabilities, {
@@ -52,19 +55,24 @@ if (typeof SAUCE_USERNAME === 'undefined') {
         Object.assign(sauceObj.desiredCapabilities, {
             platformVersion: PLATFORM_VERSION,
             deviceName: DEVICE_NAME,
-            deviceOrientation: 'portrait'
+            deviceOrientation: 'portrait',
+            appiumVersion: '1.7.2',
+            platformName: BROWSER_PLATFORM
         });
         helperObj.Appium = mixedInSauceObj;
     }
 }
 
 exports.config = {
-    tests: './functional-tests/*_test.js',
+    tests: './functional-tests/tests/*_test.js',
     timeout: DEFAULT_WAIT_TIME,
     output: './functional-tests/output',
     helpers: helperObj,
-    include: {},
-    bootstrap: false,
+    include: {
+        'I': './functional-tests/helpers/actor.js'
+    },
+    bootstrap: './functional-tests/helpers/cleanup.js',
+    teardown: './functional-tests/helpers/cleanup.js',
     mocha: {},
     name: 'box-annotations'
 };
