@@ -2,16 +2,29 @@ export const USER_ANONYMOUS = 'Anonymous';
 
 // Preview CSS constants
 export const CLASS_ACTIVE = 'bp-is-active';
+export const SELECTOR_ACTIVE = `${CLASS_ACTIVE}`;
 export const CLASS_HIDDEN = 'bp-is-hidden';
+export const SELECTOR_HIDDEN = `${CLASS_HIDDEN}`;
 export const CLASS_INVISIBLE = 'bp-is-invisible';
+export const SELECTOR_INVISIBLE = `${CLASS_INVISIBLE}`;
 export const CLASS_DISABLED = 'is-disabled';
+export const SELECTOR_DISABLED = `${CLASS_DISABLED}`;
+
 export const CLASS_BUTTON = 'bp-btn';
+export const SELECTOR_BUTTON = `${CLASS_BUTTON}`;
 export const CLASS_BUTTON_PLAIN = 'bp-btn-plain';
+export const SELECTOR_BUTTON_PLAIN = `${CLASS_BUTTON_PLAIN}`;
 export const CLASS_BUTTON_PRIMARY = 'bp-btn-primary';
+export const SELECTOR_BUTTON_PRIMARY = `${CLASS_BUTTON_PRIMARY}`;
+
 export const CLASS_BOX_PREVIEW_HEADER = 'bp-header';
+export const SELECTOR_BOX_PREVIEW_HEADER = `${CLASS_BOX_PREVIEW_HEADER}`;
 export const CLASS_BOX_PREVIEW_BASE_HEADER = 'bp-base-header';
+export const SELECTOR_BOX_PREVIEW_BASE_HEADER = `${CLASS_BOX_PREVIEW_BASE_HEADER}`;
 export const CLASS_ANNOTATION_BUTTON_POINT = 'bp-btn-annotate-point';
+export const SELECTOR_ANNOTATION_BUTTON_POINT = `${CLASS_ANNOTATION_BUTTON_POINT}`;
 export const CLASS_ANNOTATION_BUTTON_DRAW_ENTER = 'bp-btn-annotate-draw-enter';
+export const SELECTOR_ANNOTATION_BUTTON_DRAW_ENTER = `${CLASS_ANNOTATION_BUTTON_DRAW_ENTER}`;
 
 // Annotation CSS constants
 export const CLASS_ANNOTATION_POINT_MARKER = 'ba-point-annotation-marker';
