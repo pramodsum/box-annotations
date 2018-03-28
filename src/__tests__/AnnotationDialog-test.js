@@ -19,6 +19,9 @@ let dialog;
 const sandbox = sinon.sandbox.create();
 let stubs = {};
 
+const SELECTOR_ANNOTATED_ELEMENT = '.annotated-element';
+const SELECTOR_USER_NAME = '.user-name';
+
 describe('AnnotationDialog', () => {
     before(() => {
         fixture.setBase('src');
@@ -28,7 +31,7 @@ describe('AnnotationDialog', () => {
         fixture.load('__tests__/AnnotationDialog-test.html');
 
         dialog = new AnnotationDialog({
-            annotatedElement: document.querySelector('.annotated-element'),
+            annotatedElement: document.querySelector(SELECTOR_ANNOTATED_ELEMENT),
             container: document,
             location: {},
             annotations: {},
@@ -39,14 +42,14 @@ describe('AnnotationDialog', () => {
             posting: 'posting'
         };
         dialog.setup([]);
-        document.querySelector('.annotated-element').appendChild(dialog.element);
+        document.querySelector(SELECTOR_ANNOTATED_ELEMENT).appendChild(dialog.element);
 
         stubs.emit = sandbox.stub(dialog, 'emit');
         dialog.isMobile = false;
     });
 
     afterEach(() => {
-        const dialogEl = document.querySelector('.annotated-element');
+        const dialogEl = document.querySelector(SELECTOR_ANNOTATED_ELEMENT);
         if (dialogEl && dialogEl.parentNode) {
             dialogEl.parentNode.removeChild(dialogEl);
         }
@@ -828,7 +831,7 @@ describe('AnnotationDialog', () => {
                     permissions: {}
                 })
             );
-            const username = document.querySelector('.user-name');
+            const username = document.querySelector(SELECTOR_USER_NAME);
             expect(username).to.contain.html(dialog.localized.posting);
         });
 
@@ -841,7 +844,7 @@ describe('AnnotationDialog', () => {
                     permissions: {}
                 })
             );
-            const username = document.querySelector('.user-name');
+            const username = document.querySelector(SELECTOR_USER_NAME);
             expect(username).to.contain.html('user');
         });
 
