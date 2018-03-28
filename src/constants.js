@@ -29,8 +29,8 @@ export const SELECTOR_ANNOTATION_BUTTON_DRAW_ENTER = `${CLASS_ANNOTATION_BUTTON_
 // Annotation CSS constants
 export const CLASS_ANNOTATION_POINT_MARKER = 'ba-point-annotation-marker';
 export const SELECTOR_ANNOTATION_POINT_MARKER = `${CLASS_ANNOTATION_POINT_MARKER}`;
-// export const CLASS_ANNOTATION_POINT_BUTTON = 'ba-point-annotation-btn';
-// export const SELECTOR_ANNOTATION_POINT_BUTTON = `${CLASS_ANNOTATION_POINT_BUTTON}`;
+export const CLASS_ANNOTATION_POINT_BUTTON = 'ba-point-annotation-btn';
+export const SELECTOR_ANNOTATION_POINT_BUTTON = `${CLASS_ANNOTATION_POINT_BUTTON}`;
 
 // Dialog CSS constants
 export const CLASS_ANNOTATION_DIALOG = 'ba-annotation-dialog';
