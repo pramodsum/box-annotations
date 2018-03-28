@@ -37,12 +37,14 @@ export const CLASS_ANNOTATION_DIALOG = 'ba-annotation-dialog';
 export const SELECTOR_ANNOTATION_DIALOG = `${CLASS_ANNOTATION_DIALOG}`;
 export const CLASS_ANNOTATION_CARET = 'ba-annotation-caret';
 export const SELECTOR_ANNOTATION_CARET = `${CLASS_ANNOTATION_CARET}`;
+
 export const CLASS_TEXTAREA = 'ba-textarea';
 export const SELECTOR_TEXTAREA = `${CLASS_TEXTAREA}`;
 export const CLASS_ANNOTATION_TEXTAREA = 'annotation-textarea';
 export const SELECTOR_ANNOTATION_TEXTAREA = `${CLASS_ANNOTATION_TEXTAREA}`;
 export const CLASS_INVALID_INPUT = 'ba-invalid-input';
 export const SELECTOR_INVALID_INPUT = `${CLASS_INVALID_INPUT}`;
+
 export const CLASS_BUTTON_CONTAINER = 'button-container';
 export const SELECTOR_BUTTON_CONTAINER = `${CLASS_BUTTON_CONTAINER}`;
 export const CLASS_ANNOTATION_BUTTON_CANCEL = 'cancel-annotation-btn';
@@ -51,6 +53,7 @@ export const CLASS_ANNOTATION_BUTTON_POST = 'post-annotation-btn';
 export const SELECTOR_ANNOTATION_BUTTON_POST = `${CLASS_ANNOTATION_BUTTON_POST}`;
 export const CLASS_DELETE_COMMENT_BTN = 'delete-comment-btn';
 export const SELECTOR_DELETE_COMMENT_BTN = `${CLASS_DELETE_COMMENT_BTN}`;
+
 export const CLASS_ANNOTATION_CONTAINER = 'annotation-container';
 export const SELECTOR_ANNOTATION_CONTAINER = `${CLASS_ANNOTATION_CONTAINER}`;
 export const CLASS_ANNOTATION_COMMENT_TEXT = 'ba-annotation-comment-text';
@@ -61,6 +64,7 @@ export const CLASS_ANNOTATION_HIGHLIGHT_DIALOG = 'ba-annotation-highlight-dialog
 export const SELECTOR_ANNOTATION_HIGHLIGHT_DIALOG = `${CLASS_ANNOTATION_HIGHLIGHT_DIALOG}`;
 export const CLASS_ANNOTATION_PLAIN_HIGHLIGHT = 'ba-plain-highlight';
 export const SELECTOR_ANNOTATION_PLAIN_HIGHLIGHT = `${CLASS_ANNOTATION_PLAIN_HIGHLIGHT}`;
+
 export const CLASS_HIGHLIGHT_BTNS = 'ba-annotation-highlight-btns';
 export const SELECTOR_HIGHLIGHT_BTNS = `${CLASS_HIGHLIGHT_BTNS}`;
 export const CLASS_ADD_HIGHLIGHT_BTN = 'ba-add-highlight-btn';
@@ -73,6 +77,7 @@ export const CLASS_ANNOTATION_DRAWING_LABEL = 'ba-annotation-drawing-label';
 export const SELECTOR_ANNOTATION_DRAWING_LABEL = `${CLASS_ANNOTATION_DRAWING_LABEL}`;
 export const CLASS_ANNOTATION_DRAWING_DIALOG = 'ba-annotation-drawing-dialog';
 export const SELECTOR_ANNOTATION_DRAWING_DIALOG = `${CLASS_ANNOTATION_DRAWING_DIALOG}`;
+
 export const CLASS_ANNOTATION_DRAWING_BTNS = 'ba-annotation-drawing-btns';
 export const SELECTOR_ANNOTATION_DRAWING_BTNS = `${CLASS_ANNOTATION_DRAWING_BTNS}`;
 export const CLASS_ADD_DRAWING_BTN = 'ba-btn-annotate-draw-add';
@@ -91,6 +96,7 @@ export const CLASS_MOBILE_CREATE_HIGHLIGHT_DIALOG = 'ba-mobile-create-highlight-
 export const SELECTOR_MOBILE_CREATE_HIGHLIGHT_DIALOG = `${CLASS_MOBILE_CREATE_HIGHLIGHT_DIALOG}`;
 export const CLASS_CREATE_DIALOG = 'ba-create-annotation-dialog';
 export const SELECTOR_CREATE_DIALOG = `${CLASS_CREATE_DIALOG}`;
+
 export const CLASS_MOBILE_DIALOG_HEADER = 'ba-annotation-mobile-header';
 export const SELECTOR_MOBILE_DIALOG_HEADER = `${CLASS_MOBILE_DIALOG_HEADER}`;
 export const CLASS_DIALOG_CLOSE = 'ba-annotation-dialog-close';
