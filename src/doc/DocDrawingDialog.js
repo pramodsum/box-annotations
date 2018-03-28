@@ -132,7 +132,7 @@ class DocDrawingDialog extends AnnotationDialog {
         // Create outermost element container
         this.element = document.createElement('div');
         this.element.addEventListener('click', util.prevDefAndStopProp);
-        this.element.classList.add(constants.CLASS_ANNOTATION_DIALOG);
+        this.element.classList.add(constants.CLASS_DIALOG);
 
         // Create the dialog element consisting of a label, save, and delete button
         this.drawingDialogEl = this.generateDialogEl(annotations);

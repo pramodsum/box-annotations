@@ -14,7 +14,7 @@ import {
     SELECTOR_ADD_HIGHLIGHT_BTN,
     SELECTOR_ADD_HIGHLIGHT_COMMENT_BTN,
     CLASS_MOBILE_ANNOTATION_DIALOG,
-    CLASS_ANNOTATION_DIALOG,
+    CLASS_DIALOG,
     CLASS_BUTTON_PLAIN,
     PAGE_PADDING_TOP
 } from '../constants';
@@ -271,7 +271,7 @@ class CreateHighlightDialog extends CreateAnnotationDialog {
         // Get rid of the caret
         if (this.isMobile) {
             this.containerEl.classList.add(CLASS_MOBILE_ANNOTATION_DIALOG);
-            this.containerEl.classList.add(CLASS_ANNOTATION_DIALOG);
+            this.containerEl.classList.add(CLASS_DIALOG);
         }
 
         const highlightDialogEl = this.containerEl.querySelector(SELECTOR_ANNOTATION_HIGHLIGHT_DIALOG);

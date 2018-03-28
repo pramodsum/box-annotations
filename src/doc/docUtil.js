@@ -1,6 +1,6 @@
 import * as util from '../util';
 import {
-    CLASS_ANNOTATION_DIALOG,
+    CLASS_DIALOG,
     CLASS_ANNOTATION_HIGHLIGHT_DIALOG,
     PAGE_PADDING_TOP,
     PAGE_PADDING_BOTTOM,
@@ -61,7 +61,7 @@ export function isPresentation(annotatedElement) {
  * @return {boolean} Whether or not a dialog is active
  */
 export function hasActiveDialog(annotatedEl) {
-    const commentsDialogEl = annotatedEl.querySelector(`.${CLASS_ANNOTATION_DIALOG}:not(.bp-is-hidden)`);
+    const commentsDialogEl = annotatedEl.querySelector(`.${CLASS_DIALOG}:not(.bp-is-hidden)`);
     const highlightDialogEl = annotatedEl.querySelector(`.${CLASS_ANNOTATION_HIGHLIGHT_DIALOG}:not(.bp-is-hidden)`);
 
     return !!(commentsDialogEl || highlightDialogEl);

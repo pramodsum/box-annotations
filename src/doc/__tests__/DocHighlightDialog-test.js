@@ -296,7 +296,7 @@ describe('doc/DocHighlightDialog', () => {
 
             dialog.toggleHighlightDialogs();
 
-            expect(dialog.element).to.have.class(constants.CLASS_ANNOTATION_DIALOG);
+            expect(dialog.element).to.have.class(constants.CLASS_DIALOG);
             expect(dialog.position).to.be.called;
         });
 
@@ -309,7 +309,7 @@ describe('doc/DocHighlightDialog', () => {
 
             dialog.toggleHighlightDialogs();
 
-            expect(dialog.element).to.not.have.class(constants.CLASS_ANNOTATION_DIALOG);
+            expect(dialog.element).to.not.have.class(constants.CLASS_DIALOG);
             expect(dialog.position).to.be.called;
         });
     });

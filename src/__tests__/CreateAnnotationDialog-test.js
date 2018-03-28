@@ -4,7 +4,7 @@ import {
     CLASS_ADD_HIGHLIGHT_BTN,
     CLASS_ADD_HIGHLIGHT_COMMENT_BTN,
     CLASS_MOBILE_CREATE_ANNOTATION_DIALOG,
-    CLASS_ANNOTATION_DIALOG,
+    CLASS_DIALOG,
     CLASS_ANNOTATION_CARET,
     CLASS_HIDDEN,
     CREATE_EVENT
@@ -346,7 +346,7 @@ describe('CreateAnnotationDialog', () => {
             dialog.createElement();
             expect(dialog.containerEl.nodeName).to.equal('DIV');
             expect(dialog.containerEl.classList.contains(CLASS_MOBILE_CREATE_ANNOTATION_DIALOG)).to.be.true;
-            expect(dialog.containerEl.classList.contains(CLASS_ANNOTATION_DIALOG)).to.be.true;
+            expect(dialog.containerEl.classList.contains(CLASS_DIALOG)).to.be.true;
         });
 
         it('should create a comment box', () => {

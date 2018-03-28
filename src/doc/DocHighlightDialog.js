@@ -190,7 +190,7 @@ class DocHighlightDialog extends AnnotationDialog {
             this.element.classList.remove(CLASS_HIGHLIGHT_DIALOG);
             util.hideElement(this.highlightDialogEl);
 
-            this.element.classList.add(constants.CLASS_ANNOTATION_DIALOG);
+            this.element.classList.add(constants.CLASS_DIALOG);
             util.showElement(this.commentsDialogEl);
             this.hasComments = true;
             // Activate comments textarea
@@ -199,7 +199,7 @@ class DocHighlightDialog extends AnnotationDialog {
         } else {
             // Displays the highlight and comment buttons dialog and
             // hides the comments dialog
-            this.element.classList.remove(constants.CLASS_ANNOTATION_DIALOG);
+            this.element.classList.remove(constants.CLASS_DIALOG);
             util.hideElement(this.commentsDialogEl);
 
             this.element.classList.add(CLASS_HIGHLIGHT_DIALOG);
@@ -288,7 +288,7 @@ class DocHighlightDialog extends AnnotationDialog {
 
         if (!this.isMobile) {
             this.element.setAttribute('data-type', constants.DATA_TYPE_ANNOTATION_DIALOG);
-            this.element.classList.add(constants.CLASS_ANNOTATION_DIALOG);
+            this.element.classList.add(constants.CLASS_DIALOG);
             this.element.classList.add(constants.CLASS_HIDDEN);
             this.element.innerHTML = `<div class="${constants.CLASS_ANNOTATION_CARET}"></div>`;
             this.element.appendChild(this.dialogEl);

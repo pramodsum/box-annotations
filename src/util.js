@@ -12,7 +12,7 @@ import {
     CLASS_INVISIBLE,
     CLASS_DISABLED,
     CLASS_INVALID_INPUT,
-    CLASS_ANNOTATION_DIALOG,
+    CLASS_DIALOG,
     CLASS_BOX_PREVIEW_HEADER,
     CLASS_DIALOG_CLOSE,
     CLASS_MOBILE_DIALOG_HEADER,
@@ -248,7 +248,7 @@ export function resetTextarea(element, clearText) {
  * @return {boolean} Whether or not mouse is inside dialog
  */
 export function isInDialog(event, dialogEl) {
-    return !!findClosestElWithClass(dialogEl || event.target, CLASS_ANNOTATION_DIALOG);
+    return !!findClosestElWithClass(dialogEl || event.target, CLASS_DIALOG);
 }
 
 /**

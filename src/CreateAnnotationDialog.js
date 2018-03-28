@@ -1,7 +1,7 @@
 import EventEmitter from 'events';
 import CommentBox from './CommentBox';
 import { hideElement, showElement } from './util';
-import { CLASS_MOBILE_CREATE_ANNOTATION_DIALOG, CLASS_ANNOTATION_DIALOG, CREATE_EVENT } from './constants';
+import { CLASS_MOBILE_CREATE_ANNOTATION_DIALOG, CLASS_DIALOG, CREATE_EVENT } from './constants';
 
 class CreateAnnotationDialog extends EventEmitter {
     /** @property {HTMLElement} - Container element for the dialog. */
@@ -276,7 +276,7 @@ class CreateAnnotationDialog extends EventEmitter {
     createElement() {
         this.containerEl = document.createElement('div');
         this.containerEl.classList.add(CLASS_MOBILE_CREATE_ANNOTATION_DIALOG);
-        this.containerEl.classList.add(CLASS_ANNOTATION_DIALOG);
+        this.containerEl.classList.add(CLASS_DIALOG);
 
         if (!this.isMobile) {
             // Stop interacting with this element from triggering outside actions

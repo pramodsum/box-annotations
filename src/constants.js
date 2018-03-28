@@ -33,8 +33,8 @@ export const SELECTOR_ANNOTATION_POINT_MARKER = `${CLASS_ANNOTATION_POINT_MARKER
 // export const SELECTOR_ANNOTATION_POINT_BUTTON = `${CLASS_ANNOTATION_POINT_BUTTON}`;
 
 // Dialog CSS constants
-export const CLASS_ANNOTATION_DIALOG = 'ba-annotation-dialog';
-export const SELECTOR_ANNOTATION_DIALOG = `${CLASS_ANNOTATION_DIALOG}`;
+export const CLASS_DIALOG = 'ba-dialog';
+export const SELECTOR_ANNOTATION_DIALOG = `${CLASS_DIALOG}`;
 export const CLASS_ANNOTATION_CARET = 'ba-annotation-caret';
 export const SELECTOR_ANNOTATION_CARET = `${CLASS_ANNOTATION_CARET}`;
 export const CLASS_TEXTAREA = 'ba-textarea';

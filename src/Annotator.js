@@ -6,7 +6,7 @@ import {
     CLASS_HIDDEN,
     DATA_TYPE_ANNOTATION_DIALOG,
     CLASS_MOBILE_ANNOTATION_DIALOG,
-    CLASS_ANNOTATION_DIALOG,
+    CLASS_DIALOG,
     CLASS_MOBILE_DIALOG_HEADER,
     ID_MOBILE_ANNOTATION_DIALOG,
     TYPES,
@@ -272,7 +272,7 @@ class Annotator extends EventEmitter {
         this.mobileDialogEl = util.generateMobileDialogEl();
         this.mobileDialogEl.setAttribute('data-type', DATA_TYPE_ANNOTATION_DIALOG);
         this.mobileDialogEl.classList.add(CLASS_MOBILE_ANNOTATION_DIALOG);
-        this.mobileDialogEl.classList.add(CLASS_ANNOTATION_DIALOG);
+        this.mobileDialogEl.classList.add(CLASS_DIALOG);
         this.mobileDialogEl.classList.add(CLASS_HIDDEN);
         this.mobileDialogEl.id = ID_MOBILE_ANNOTATION_DIALOG;
         this.container.appendChild(this.mobileDialogEl);

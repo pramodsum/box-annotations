@@ -3,7 +3,7 @@ import * as docUtil from '../docUtil';
 import {
     SELECTOR_ANNOTATION_DIALOG,
     SELECTOR_ANNOTATION_CONTAINER,
-    CLASS_ANNOTATION_DIALOG,
+    CLASS_DIALOG,
     DATA_TYPE_ANNOTATION_DIALOG
 } from '../../constants';
 import * as util from '../../util';
@@ -55,7 +55,7 @@ describe('doc/docUtil', () => {
             currDialogEl.classList.add('bp-is-hidden');
 
             const openDialogEl = document.createElement('div');
-            openDialogEl.classList.add(CLASS_ANNOTATION_DIALOG);
+            openDialogEl.classList.add(CLASS_DIALOG);
             docEl.appendChild(openDialogEl);
 
             const result = docUtil.hasActiveDialog(document);
