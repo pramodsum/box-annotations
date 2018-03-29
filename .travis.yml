@@ -5,7 +5,7 @@ node_js:
 notifications:
     email:
         recipients:
-            - preview-alerts@box.com
+            - spramod@box.com
 aliases:
     - &sauce-labs
         before_script:
