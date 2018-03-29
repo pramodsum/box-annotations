@@ -38,12 +38,6 @@ jobs:
     stage: sauce-labs - windows 10
     env: BROWSER_PLATFORM="Windows 10" BROWSER_NAME="MicrosoftEdge"
     script: yarn run functional-tests-ci
-  - <<: *sauce-labs-chrome
-    stage: sauce-labs - windows 10
-    env: BROWSER_PLATFORM="Windows 10" BROWSER_NAME="chrome"
-  - <<: *sauce-labs-firefox
-    stage: sauce-labs - windows 10
-    env: BROWSER_PLATFORM="Windows 10" BROWSER_NAME="firefox"
   - <<: *sauce-labs
     stage: sauce-labs - windows 10
     env: BROWSER_PLATFORM="Windows 10" BROWSER_NAME="internet explorer"
@@ -58,9 +52,6 @@ jobs:
   - <<: *sauce-labs-firefox
     stage: sauce-labs - osx
     env: BROWSER_PLATFORM="macOS 10.13" BROWSER_NAME="firefox"
-  - <<: *sauce-labs-ios
-    stage: sauce-labs - mobile
-    env: BROWSER_PLATFORM="iOS" DEVICE_NAME="iPhone X Simulator" PLATFORM_VERSION="11.2" BROWSER_NAME="Safari"
   - <<: *sauce-labs-ios
     stage: sauce-labs - mobile
     env: BROWSER_PLATFORM="iOS" DEVICE_NAME="iPhone 6 Simulator" PLATFORM_VERSION="11.2" BROWSER_NAME="Safari"
