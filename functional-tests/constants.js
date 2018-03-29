@@ -1,15 +1,26 @@
-// Unfortunately node doesnt support native imports (yet)
+// Preview CSS constants
 exports.SELECTOR_PREVIEW = '.bp';
+exports.SELECTOR_ACTIVE = '.bp-is-active';
+exports.SELECTOR_HIDDEN = '.bp-is-hidden';
+exports.SELECTOR_INVISIBLE = '.bp-is-invisible';
+exports.SELECTOR_DISABLED = '.is-disabled';
+exports.SELECTOR_BUTTON = '.bp-btn';
+exports.SELECTOR_BUTTON_PLAIN = '.bp-btn-plain';
+exports.SELECTOR_BUTTON_PRIMARY = '.bp-btn-primary';
+exports.SELECTOR_BOX_PREVIEW_HEADER = '.bp-header';
 exports.SELECTOR_BOX_PREVIEW_BASE_HEADER = '.bp-base-header';
-exports.SELECTOR_ANNOTATION_POINT_BUTTON = '.bp-btn-annotate-point';
-exports.SELECTOR_ANNOTATION_BUTTON_DRAW_ENTER = '.bp-btn-annotate-draw';
+exports.SELECTOR_ANNOTATION_BUTTON_POINT = '.bp-btn-annotate-point';
+exports.SELECTOR_ANNOTATION_BUTTON_DRAW = '.bp-btn-annotate-draw';
+exports.SELECTOR_ANNOTATION_BUTTON_DRAW_ENTER = '.bp-btn-annotate-draw-enter';
 
+// Annotations CSS constants
 exports.SELECTOR_ANNOTATIONS_LOADED = '.ba-annotations-loaded';
 exports.SELECTOR_ANNOTATION_BUTTON_CANCEL = '.cancel-annotation-btn';
 exports.SELECTOR_ANNOTATION_BUTTON_POST = '.post-annotation-btn';
 exports.SELECTOR_ANNOTATION_DIALOG = '.ba-annotation-dialog';
 exports.SELECTOR_ANNOTATION_HIGHLIGHT_DIALOG = '.ba-annotation-highlight-dialog';
 exports.SELECTOR_ANNOTATION_PLAIN_HIGHLIGHT = '.ba-plain-highlight';
+exports.SELECTOR_ANNOTATION_POINT_BUTTON = '.ba-point-annotation-btn';
 exports.SELECTOR_ANNOTATION_POINT_MARKER = '.ba-point-annotation-marker';
 exports.SELECTOR_ANNOTATION_MODE = '.ba-annotation-mode';
 exports.SELECTOR_ANNOTATION_CARET = '.ba-annotation-caret';
@@ -33,7 +44,7 @@ exports.SELECTOR_ANNOTATION_LAYER_HIGHLIGHT = '.ba-annotation-layer-highlight';
 exports.SELECTOR_ANNOTATION_LAYER_HIGHLIGHT_COMMENT = '.ba-annotation-layer-highlight-comment';
 exports.SELECTOR_ANNOTATION_LAYER_DRAW = '.ba-annotation-layer-draw';
 exports.SELECTOR_ANNOTATION_LAYER_DRAW_IN_PROGRESS = '.ba-annotation-layer-draw-in-progress';
-exports.SELECTOR_ANNOTATION_BUTTON_POINT = '.ba-btn-annotate-point';
+exports.SELECTOR_ANNOTATION_BUTTON_POINT_EXIT = '.ba-btn-annotate-point-exit';
 exports.SELECTOR_ANNOTATION_BUTTON_DRAW_UNDO = '.ba-btn-annotate-draw-undo';
 exports.SELECTOR_ANNOTATION_BUTTON_DRAW_REDO = '.ba-btn-annotate-draw-redo';
 exports.SELECTOR_ANNOTATION_BUTTON_DRAW_POST = '.ba-btn-annotate-draw-post';
@@ -42,8 +53,10 @@ exports.SELECTOR_ANNOTATION_COMMENT_TEXT = '.ba-annotation-comment-text';
 exports.SELECTOR_ANNOTATION_DRAWING_LABEL = '.ba-annotation-drawing-label';
 exports.SELECTOR_ANNOTATION_DRAWING_DIALOG = '.ba-annotation-drawing-dialog';
 exports.SELECTOR_ANNOTATION_DRAWING_BTNS = '.ba-annotation-drawing-btns';
-exports.SELECTOR_ANNOTATION_DRAWING_HEADER = '.ba-annotate-draw-header';
-exports.SELECTOR_ANNNOTATION_DRAWING_BACKGROUND = '.ba-annotate-draw-background';
+exports.SELECTOR_ANNOTATION_MODE_HEADER = '.ba-mode-header';
+exports.SELECTOR_POINT_MODE_HEADER = '.ba-point-mode-header';
+exports.SELECTOR_DRAW_MODE_HEADER = '.ba-draw-mode-header';
+exports.SELECTOR_ANNNOTATION_MODE_BACKGROUND = '.ba-annotate-mode-background';
 exports.SELECTOR_ADD_DRAWING_BTN = '.ba-btn-annotate-draw-add';
 exports.SELECTOR_DELETE_DRAWING_BTN = '.ba-btn-annotate-draw-delete';
 exports.SELECTOR_INVALID_INPUT = '.ba-invalid-input';
