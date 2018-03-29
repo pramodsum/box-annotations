@@ -26,7 +26,6 @@
         "Assert": false,
         "Feature": false,
         "Before": false,
-        "BeforeAll": false,
         "Scenario": false
     },
     "rules": {

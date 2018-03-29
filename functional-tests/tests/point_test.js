@@ -13,7 +13,7 @@ const {
     SELECTOR_ANNOTATION_BUTTON_POINT_EXIT,
     SELECTOR_DELETE_COMMENT_BTN,
     SELECTOR_CONFIRM_DELETE_BTN
-} = require('../constants');
+} = require('../helpers/constants');
 
 Feature('Point Annotation Sanity');
 
@@ -21,7 +21,7 @@ Before((I) => {
     I.amOnPage('/');
 });
 
-Scenario('Create a new point annotation @ci', (I) => {
+Scenario('Create a new point annotation', (I) => {
     I.say('Point Annotation mode button is visible in the header');
     I.waitForVisible(SELECTOR_ANNOTATIONS_LOADED);
     I.dontSeeElementInDOM(SELECTOR_ANNOTATION_POINT_MARKER);
@@ -48,9 +48,12 @@ Scenario('Create a new point annotation @ci', (I) => {
     I.say('Exit point annotation mode');
     I.click(SELECTOR_ANNOTATION_BUTTON_POINT_EXIT);
     I.waitForVisible(SELECTOR_ANNOTATION_BUTTON_POINT);
+
+    // Wait a few seconds for the annotation to save on the server
+    I.wait(1);
 });
 
-Scenario('Reply to an existing point annotation @ci', (I) => {
+Scenario('Reply to an existing point annotation', (I) => {
     I.say('An annotation should be visible');
     I.waitForVisible(SELECTOR_ANNOTATIONS_LOADED);
     I.seeNumberOfElements(SELECTOR_ANNOTATION_POINT_MARKER, 1);
@@ -74,7 +77,7 @@ Scenario('Reply to an existing point annotation @ci', (I) => {
     I.wait(1);
 });
 
-Scenario('Delete reply to a point annotation @ci', (I) => {
+Scenario('Delete reply to a point annotation', (I) => {
     I.say('An annotation should be visible');
     I.waitForVisible(SELECTOR_ANNOTATIONS_LOADED);
     I.seeNumberOfElements(SELECTOR_ANNOTATION_POINT_MARKER, 1);
@@ -98,7 +101,7 @@ Scenario('Delete reply to a point annotation @ci', (I) => {
     I.wait(1);
 });
 
-Scenario('Delete the point annotation thread @ci', (I) => {
+Scenario('Delete the point annotation thread', (I) => {
     I.say('An annotation should be visible');
     I.waitForVisible(SELECTOR_ANNOTATIONS_LOADED);
     I.seeNumberOfElements(SELECTOR_ANNOTATION_POINT_MARKER, 1);

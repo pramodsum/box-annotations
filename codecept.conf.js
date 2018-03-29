@@ -8,7 +8,7 @@ const {
     BROWSER_PLATFORM,
     PLATFORM_VERSION,
     DEVICE_NAME,
-    DEFAULT_WAIT_TIME = 90000
+    DEFAULT_WAIT_TIME = 9000
 } = process.env;
 const MOBILE_PLATFORMS = ['iOS', 'Android'];
 
@@ -22,11 +22,10 @@ const commonConfigObj = {
 };
 
 const helperObj = {};
-if (typeof SAUCE_USERNAME === 'undefined') {
+const isLocalBuild = typeof SAUCE_USERNAME === 'undefined';
+
+if (isLocalBuild) {
     helperObj.WebDriverIO = commonConfigObj;
-    helperObj.Drawing = {
-        'require': './functional-tests/helpers/drawing_helper.js'
-    };
 } else {
     // Common saucelab config
     const sauceObj = {
@@ -68,11 +67,10 @@ exports.config = {
     timeout: DEFAULT_WAIT_TIME,
     output: './functional-tests/output',
     helpers: helperObj,
-    include: {
-        'I': './functional-tests/helpers/actor.js'
-    },
+    include: {},
     bootstrap: './functional-tests/helpers/cleanup.js',
     teardown: './functional-tests/helpers/cleanup.js',
     mocha: {},
-    name: 'box-annotations'
+    name: 'box-annotations',
+    hooks: isLocalBuild ? [] : ['./functional-tests/helpers/eventHooks.js']
 };

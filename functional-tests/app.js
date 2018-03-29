@@ -11,6 +11,24 @@ const app = express();
 const FILE_ID_DOC = '285405334010';
 const ACCESS_TOKEN = 'F3D4ZM6OCIn6pR7pC2oYmhk4Ax40Ohhh';
 
+const server = app.listen(8080, () => console.log('Example app listening on port 8080!'));
+
+// this function is called when you want the server to die gracefully
+// i.e. wait for existing connections
+const gracefulShutdown = function() {
+    console.log('Received kill signal, shutting down gracefully.');
+    server.close(function() {
+        console.log('Closed out remaining connections.');
+        process.exit()
+    });
+
+    // if after
+    setTimeout(function() {
+        console.error('Could not close connections in time, forcefully shutting down');
+        process.exit()
+    }, 10*1000);
+};
+
 app.use(express.static('lib'));
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
@@ -44,24 +62,6 @@ app.get('/', function(req, res) {
         })
         .catch(errorCallback);
 });
-
-const server = app.listen(8080, () => console.log('Example app listening on port 8080!'));
-
-// this function is called when you want the server to die gracefully
-// i.e. wait for existing connections
-const gracefulShutdown = function() {
-    console.log('Received kill signal, shutting down gracefully.');
-    server.close(function() {
-        console.log('Closed out remaining connections.');
-        process.exit()
-    });
-
-    // if after
-    setTimeout(function() {
-        console.error('Could not close connections in time, forcefully shutting down');
-        process.exit()
-    }, 10*1000);
-}
 
 // listen for TERM signal .e.g. kill
 process.on ('SIGTERM', gracefulShutdown);

@@ -7,6 +7,7 @@
   "dependencies": {
     "box-node-sdk": "^1.12.1",
     "express": "^4.16.2",
-    "pug": "^2.0.0"
+    "pug": "^2.0.0",
+    "saucelabs": "^1.4.0"
   }
 }
