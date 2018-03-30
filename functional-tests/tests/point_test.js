@@ -58,19 +58,21 @@ Scenario('Reply to an existing point annotation', (I) => {
     I.waitForVisible(SELECTOR_ANNOTATIONS_LOADED);
     I.seeNumberOfElements(SELECTOR_ANNOTATION_POINT_MARKER, 1);
 
-    I.say('Hover over a point annotation dialog');
-    I.moveCursorTo(SELECTOR_ANNOTATION_POINT_MARKER);
+    I.say('Open the point annotation dialog');
+    I.click(SELECTOR_ANNOTATION_POINT_MARKER);
     I.waitForVisible(SELECTOR_ANNOTATION_DIALOG);
     I.seeNumberOfElements(SELECTOR_ANNOTATION_COMMENT, 1);
 
     I.say('Add comment to annotation and save');
+    I.scrollTo(SELECTOR_REPLY_TEXTAREA);
     I.waitForEnabled(SELECTOR_REPLY_TEXTAREA);
     I.fillField(SELECTOR_REPLY_TEXTAREA, 'Sample Reply');
+    I.scrollTo(SELECTOR_REPLY_CONTAINER);
     I.click(`${SELECTOR_REPLY_CONTAINER} ${SELECTOR_ANNOTATION_BUTTON_POST}`);
 
     I.say('Annotation should be added to the dialog');
     I.waitForValue(SELECTOR_REPLY_TEXTAREA, '');
-    I.moveCursorTo(SELECTOR_ANNOTATION_POINT_MARKER);
+    I.click(SELECTOR_ANNOTATION_POINT_MARKER);
     I.seeNumberOfElements(SELECTOR_ANNOTATION_COMMENT, 2);
 
     // Wait a few seconds for the annotation to save on the server
@@ -81,9 +83,10 @@ Scenario('Delete reply to a point annotation', (I) => {
     I.say('An annotation should be visible');
     I.waitForVisible(SELECTOR_ANNOTATIONS_LOADED);
     I.seeNumberOfElements(SELECTOR_ANNOTATION_POINT_MARKER, 1);
+    I.scrollTo(SELECTOR_ANNOTATION_POINT_MARKER);
 
-    I.say('Hover over a point annotation dialog');
-    I.moveCursorTo(SELECTOR_ANNOTATION_POINT_MARKER);
+    I.say('Open the point annotation dialog');
+    I.click(SELECTOR_ANNOTATION_POINT_MARKER);
     I.seeNumberOfElements(SELECTOR_ANNOTATION_COMMENT, 2);
 
     I.say('Delete only one annotation');
@@ -94,7 +97,7 @@ Scenario('Delete reply to a point annotation', (I) => {
     I.click(SELECTOR_CONFIRM_DELETE_BTN);
 
     I.say('One annotation should be removed from the dialog');
-    I.moveCursorTo(SELECTOR_ANNOTATION_POINT_MARKER);
+    I.click(SELECTOR_ANNOTATION_POINT_MARKER);
     I.seeNumberOfElements(SELECTOR_ANNOTATION_COMMENT, 1);
 
     // Wait a few seconds for the annotation to save on the server
@@ -105,9 +108,10 @@ Scenario('Delete the point annotation thread', (I) => {
     I.say('An annotation should be visible');
     I.waitForVisible(SELECTOR_ANNOTATIONS_LOADED);
     I.seeNumberOfElements(SELECTOR_ANNOTATION_POINT_MARKER, 1);
+    I.scrollTo(SELECTOR_ANNOTATION_POINT_MARKER);
 
-    I.say('Hover over a point annotation dialog');
-    I.moveCursorTo(SELECTOR_ANNOTATION_POINT_MARKER);
+    I.say('Open the point annotation dialog');
+    I.click(SELECTOR_ANNOTATION_POINT_MARKER);
     I.seeNumberOfElements(SELECTOR_ANNOTATION_COMMENT, 1);
 
     I.say('Delete the last annotation');

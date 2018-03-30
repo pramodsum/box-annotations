@@ -4,7 +4,11 @@
 /* eslint-disable no-console */
 const BoxSDK = require('box-node-sdk');
 
-const FILE_ID_DOC = '285405334010';
+const {
+    FILE_ID,
+    FILE_VERSION_ID
+} = process.env;
+
 const ACCESS_TOKEN = 'F3D4ZM6OCIn6pR7pC2oYmhk4Ax40Ohhh';
 const CLIENT_ID = 'l20yq2uyg3y8vl27rvw67m8s0ryo9mrz';
 
@@ -26,7 +30,7 @@ function deleteAnnotation(annotation) {
 }
 
 module.exports = function() {
-    client.get(`/files/${FILE_ID_DOC}/annotations?version=300321357002`, {}, function(err, response) {
+    client.get(`/files/${FILE_ID}/annotations?version=${FILE_VERSION_ID}`, {}, function(err, response) {
         if (err) {
             // handle error
             throw err;
