@@ -367,11 +367,11 @@ class AnnotationThread extends EventEmitter {
         }
 
         this.element.addEventListener('click', this.showDialog);
-        this.element.addEventListener('mouseenter', this.showDialog);
+        // this.element.addEventListener('mouseenter', this.showDialog);
 
-        if (!this.isMobile) {
-            this.element.addEventListener('mouseleave', this.mouseoutHandler);
-        }
+        // if (!this.isMobile) {
+        //     this.element.addEventListener('mouseleave', this.mouseoutHandler);
+        // }
     }
 
     /**
