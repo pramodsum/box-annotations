@@ -28,9 +28,25 @@ app.use(express.static(path.join(__dirname, 'lib')));
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 
+// this function is called when you want the server to die gracefully
+// i.e. wait for existing connections
+function gracefulShutdown() {
+    console.log('Received kill signal, shutting down gracefully.');
+    server.close(function() {
+        console.log('Closed out remaining connections.');
+        process.exit();
+    });
+
+    // if after
+    setTimeout(function() {
+        console.error('Could not close connections in time, forcefully shutting down');
+        process.exit();
+    }, 10*1000);
+}
+
 function errorCallback(err) {
     console.log(err.response.body);
-    throw err;
+    gracefulShutdown();
 }
 
 // viewed at http://localhost:8080
@@ -51,22 +67,6 @@ app.get('/', function(req, res) {
         })
         .catch(errorCallback);
 });
-
-// this function is called when you want the server to die gracefully
-// i.e. wait for existing connections
-function gracefulShutdown() {
-    console.log('Received kill signal, shutting down gracefully.');
-    server.close(function() {
-        console.log('Closed out remaining connections.');
-        process.exit();
-    });
-
-    // if after
-    setTimeout(function() {
-        console.error('Could not close connections in time, forcefully shutting down');
-        process.exit();
-    }, 10*1000);
-}
 
 // listen for TERM signal .e.g. kill
 process.on ('SIGTERM', gracefulShutdown);
