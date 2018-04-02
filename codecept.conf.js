@@ -25,7 +25,23 @@ const helperObj = {};
 const isLocalBuild = typeof SAUCE_USERNAME === 'undefined';
 
 if (isLocalBuild) {
-    helperObj.WebDriverIO = commonConfigObj;
+    // appium (mobile)
+    commonConfigObj.desiredCapabilities = {
+        platform: 'iOS',
+        platformName: BROWSER_PLATFORM,
+        browserName: 'chrome',
+        platformVersion: '11.2',
+        deviceName: 'iOS',
+        deviceOrientation: 'portrait',
+        chromeOptions: {
+            mobileEmulation: {
+                deviceName: 'iPhone 6/7/8'
+            }
+        }
+    };
+    helperObj.Appium = commonConfigObj;
+
+    // helperObj.WebDriverIO = commonConfigObj;
 } else {
     // Common saucelab config
     const sauceObj = {
