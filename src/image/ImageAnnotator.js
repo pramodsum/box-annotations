@@ -1,5 +1,6 @@
 import Annotator from '../Annotator';
 import ImagePointThread from './ImagePointThread';
+import ImageDrawingThread from './ImageDrawingThread';
 import * as util from '../util';
 import * as imageUtil from './imageUtil';
 import { ANNOTATOR_EVENT, TYPES } from '../constants';
@@ -113,6 +114,8 @@ class ImageAnnotator extends Annotator {
 
         if (type === TYPES.point) {
             thread = new ImagePointThread(threadParams);
+        } else if (type === TYPES.draw) {
+            thread = new ImageDrawingThread(threadParams);
         }
 
         if (!thread) {
@@ -165,6 +168,80 @@ class ImageAnnotator extends Annotator {
             util.hideElement(pointAnnotateButton);
         } else {
             util.showElement(pointAnnotateButton);
+        }
+    }
+    /**
+     * Annotations setup.
+     *
+     * @protected
+     * @override
+     * @return {void}
+     */
+    setupAnnotations() {
+        super.setupAnnotations();
+
+        // Determine enabled annotation types before binding mode controller listeners
+        this.drawEnabled = !!this.modeControllers[TYPES.draw];
+
+        // Don't bind to draw specific handlers if we cannot draw
+        if (this.drawEnabled) {
+            this.drawingSelectionHandler = this.drawingSelectionHandler.bind(this);
+        }
+    }
+
+    /**
+     * Binds DOM event listeners.
+     *
+     * @protected
+     * @override
+     * @return {void}
+     */
+    bindDOMListeners() {
+        super.bindDOMListeners();
+
+        if (!this.drawEnabled) {
+            return;
+        }
+
+        if (this.hasTouch) {
+            this.annotatedElement.addEventListener('touchstart', this.drawingSelectionHandler);
+        } else {
+            this.annotatedElement.addEventListener('click', this.drawingSelectionHandler);
+        }
+    }
+
+    /**
+     * Unbinds DOM event listeners.
+     *
+     * @protected
+     * @override
+     * @return {void}
+     */
+    unbindDOMListeners() {
+        super.unbindDOMListeners();
+
+        if (!this.drawEnabled) {
+            return;
+        }
+
+        if (this.hasTouch) {
+            this.annotatedElement.removeEventListener('touchstart', this.drawingSelectionHandler);
+        } else {
+            this.annotatedElement.removeEventListener('click', this.drawingSelectionHandler);
+        }
+    }
+
+    /**
+     * Drawing selection handler. Delegates to the drawing controller
+     *
+     * @private
+     * @param {Event} event DOM event
+     * @return {void}
+     */
+    drawingSelectionHandler(event) {
+        const controller = this.modeControllers[TYPES.draw];
+        if (controller && !this.isCreatingAnnotation() && !this.isCreatingHighlight) {
+            controller.handleSelection(event);
         }
     }
 }

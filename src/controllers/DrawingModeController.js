@@ -20,6 +20,9 @@ import {
 } from '../constants';
 
 class DrawingModeController extends AnnotationModeController {
+    /** */
+    threadConstructor;
+
     /** @property {DrawingThread} - The currently selected DrawingThread */
     selectedThread;
 

@@ -114,3 +114,33 @@ export function getBrowserCoordinatesFromLocation(location, annotatedElement) {
 
     return [x, y];
 }
+
+/**
+ * Gets the context an annotation should be drawn on.
+ *
+ * @param {HTMLElement} imageEl - The DOM element for the current page
+ * @param {string} annotationLayerClass - The class name for the annotation layer
+ * @param {number} [paddingTop] - The top padding of each page element
+ * @param {number} [paddingBottom] - The bottom padding of each page element
+ * @return {RenderingContext|null} Context or null if no page element was given
+ */
+export function getContext(imageEl, annotationLayerClass) {
+    if (!imageEl) {
+        return null;
+    }
+
+    // Return existing annotation layer if it already exists
+    let annotationLayerEl = imageEl.querySelector(`canvas.${annotationLayerClass}`);
+    if (annotationLayerEl) {
+        return annotationLayerEl.getContext('2d');
+    }
+
+    // Create annotation layer (e.g. first load or page resize)
+    annotationLayerEl = document.createElement('canvas');
+    annotationLayerEl.classList.add(annotationLayerClass);
+    annotationLayerEl = util.scaleCanvas(imageEl, annotationLayerEl);
+
+    const annotatedElement = imageEl.parentElement;
+    annotatedElement.appendChild(annotationLayerEl);
+    return annotationLayerEl.getContext('2d');
+}

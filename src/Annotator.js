@@ -588,6 +588,25 @@ class Annotator extends EventEmitter {
     }
 
     /**
+     * Returns whether any mode controller is currently creating an
+     * annotation thread
+     *
+     * @private
+     * @return {boolean} Whether any controller has a pending thread
+     */
+    isCreatingAnnotation() {
+        let isPending = false;
+        Object.keys(this.modeControllers).some((mode) => {
+            const controller = this.modeControllers[mode];
+            if (controller.hadPendingThreads) {
+                isPending = true;
+            }
+            return isPending;
+        });
+        return isPending;
+    }
+
+    /**
      * Displays annotation validation error notification once on load. Does
      * nothing if notification was already displayed once.
      *

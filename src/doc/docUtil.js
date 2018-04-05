@@ -311,34 +311,6 @@ export function isValidSelection(selection) {
 }
 
 /**
- * Scales the canvas an annotation should be drawn on
- *
- * @param {HTMLElement} pageEl - The DOM element for the current page
- * @param {HTMLElement} annotationLayerEl - The annotation canvas layer
- * @return {HTMLElement} The scaled annotation canvas layer
- */
-export function scaleCanvas(pageEl, annotationLayerEl) {
-    const pageDimensions = pageEl.getBoundingClientRect();
-    const pxRatio = window.devicePixelRatio || 1;
-    const { width } = pageDimensions;
-    const height = pageDimensions.height - constants.PAGE_PADDING_TOP - constants.PAGE_PADDING_BOTTOM;
-
-    const scaledCanvas = annotationLayerEl;
-    scaledCanvas.width = pxRatio * width;
-    scaledCanvas.height = pxRatio * height;
-
-    if (pxRatio !== 1) {
-        scaledCanvas.style.width = `${width}px`;
-        scaledCanvas.style.height = `${height}px`;
-
-        const context = annotationLayerEl.getContext('2d');
-        context.scale(pxRatio, pxRatio);
-    }
-
-    return scaledCanvas;
-}
-
-/**
  * Gets the context an annotation should be drawn on.
  *
  * @param {HTMLElement} pageEl - The DOM element for the current page
@@ -361,7 +333,7 @@ export function getContext(pageEl, annotationLayerClass) {
     // Create annotation layer (e.g. first load or page resize)
     annotationLayerEl = document.createElement('canvas');
     annotationLayerEl.classList.add(annotationLayerClass);
-    annotationLayerEl = scaleCanvas(pageEl, annotationLayerEl);
+    annotationLayerEl = util.scaleCanvas(pageEl, annotationLayerEl);
 
     const textLayerEl = pageEl.querySelector('.textLayer');
     const canvasWrapperEl = pageEl.querySelector('.canvasWrapper');

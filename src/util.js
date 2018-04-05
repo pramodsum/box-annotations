@@ -17,7 +17,9 @@ import {
     CLASS_BOX_PREVIEW_HEADER,
     CLASS_DIALOG_CLOSE,
     CLASS_MOBILE_DIALOG_HEADER,
-    DATA_TYPE_MOBILE_CLOSE
+    DATA_TYPE_MOBILE_CLOSE,
+    PAGE_PADDING_TOP,
+    PAGE_PADDING_BOTTOM
 } from './constants';
 
 import { ICON_CLOSE } from './icons/icons';
@@ -834,4 +836,32 @@ export function generateMobileDialogEl() {
     headerEl.appendChild(closeButtonEl);
 
     return el;
+}
+
+/**
+ * Scales the canvas an annotation should be drawn on
+ *
+ * @param {HTMLElement} pageEl - The DOM element for the current page
+ * @param {HTMLElement} annotationLayerEl - The annotation canvas layer
+ * @return {HTMLElement} The scaled annotation canvas layer
+ */
+export function scaleCanvas(pageEl, annotationLayerEl) {
+    const pageDimensions = pageEl.getBoundingClientRect();
+    const pxRatio = window.devicePixelRatio || 1;
+    const { width } = pageDimensions;
+    const height = pageDimensions.height - PAGE_PADDING_TOP - PAGE_PADDING_BOTTOM;
+
+    const scaledCanvas = annotationLayerEl;
+    scaledCanvas.width = pxRatio * width;
+    scaledCanvas.height = pxRatio * height;
+
+    if (pxRatio !== 1) {
+        scaledCanvas.style.width = `${width}px`;
+        scaledCanvas.style.height = `${height}px`;
+
+        const context = annotationLayerEl.getContext('2d');
+        context.scale(pxRatio, pxRatio);
+    }
+
+    return scaledCanvas;
 }

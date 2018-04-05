@@ -25,8 +25,8 @@ const ANNOTATORS = [
         NAME: 'Image',
         CONSTRUCTOR: ImageAnnotator,
         VIEWER: ['Image', 'MultiImage'],
-        TYPE: [TYPES.point],
-        DEFAULT_TYPES: [TYPES.point]
+        TYPE: [TYPES.point, TYPES.draw],
+        DEFAULT_TYPES: [TYPES.point, TYPES.draw]
     }
 ];
 
