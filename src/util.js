@@ -739,38 +739,6 @@ export function canLoadAnnotations(permissions) {
 }
 
 /**
- * Creates a paragraph node that preserves newline characters.
- *
- * @param {string} annotationText - Text that belongs to an annotation.
- * @return {HTMLElement} An HTML Element containing newline preserved text.
- */
-export function createCommentTextNode(annotationText) {
-    const newlineList = annotationText.replace(NEWLINE_REGEX, '\n').split('\n');
-    const textEl = document.createElement('p');
-    textEl.classList.add(CLASS_ANNOTATION_COMMENT_TEXT);
-
-    // If newlines are present...
-    if (newlineList.length > 1) {
-        newlineList.forEach((text) => {
-            if (text === '') {
-                // ...Add in <br/> for each one...
-                textEl.appendChild(document.createElement('br'));
-            } else {
-                // ...Otherwise use the text that exists there.
-                const contentEl = document.createElement('p');
-                contentEl.textContent = text;
-                textEl.appendChild(contentEl);
-            }
-        });
-    } else {
-        // Otherwise just use the text
-        textEl.textContent = annotationText;
-    }
-
-    return textEl;
-}
-
-/**
  * Clears the specified canvas context
  *
  * @param {HTMLElement} pageEl The DOM element for the current page
