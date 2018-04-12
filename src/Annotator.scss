@@ -97,11 +97,11 @@
 
 // Icon buttons
 .delete-comment-btn {
-    svg {
+    svg g {
         fill: lighten($better-black, 10%);
     }
 
-    &:hover svg {
+    &:hover svg g {
         fill: $better-black;
     }
 }
@@ -203,6 +203,7 @@
         margin-top: 15px;
         padding-bottom: 15px;
         position: relative;
+        white-space: pre-line;
 
         &:first-child {
             margin-top: 0;
@@ -213,7 +214,12 @@
         }
 
         .ba-annotation-comment-text {
+            color: $fours;
+            font-size: 12px;
             margin-bottom: 0;
+            padding-top: 10px;
+            width: 250px;
+            word-wrap: break-word;
 
             & p {
                 margin: 0;
@@ -255,14 +261,6 @@
         }
     }
 
-    .comment-text {
-        color: $fours;
-        font-size: 12px;
-        padding-top: 10px;
-        width: 250px;
-        word-wrap: break-word;
-    }
-
     .delete-confirmation {
         background-color: fade-out($white, .05);
         height: 100%;
@@ -302,8 +300,8 @@
         top: 0;
 
         svg {
-            height: 18px;
-            width: 18px;
+            height: 15px;
+            width: 15px;
         }
 
         &:focus {

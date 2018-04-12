@@ -23,7 +23,7 @@ module.exports = () => {
                     test: /\.js$/,
                     use: 'babel-loader',
                     exclude: [
-                        path.resolve('node_modules')
+                        path.resolve('^(?!node_modules/box-react-ui).*')
                     ]
                 },
                 {
@@ -46,7 +46,7 @@ module.exports = () => {
                         ]
                     }),
                     exclude: [
-                        path.resolve('node_modules')
+                        path.resolve('^(?!node_modules/box-react-ui).*')
                     ]
                 },
                 {
