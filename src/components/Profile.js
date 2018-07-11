@@ -4,7 +4,7 @@ import Avatar from 'box-react-ui/lib/components/avatar/Avatar';
 import * as constants from '../constants';
 
 /* eslint-disable require-jsdoc */
-const ProfileContainer = ({ createdBy, name, id, avatarUrl }) => (
+const ProfileContainer = ({ createdBy, name, id = '0', avatarUrl }) => (
     <div>
         <div className={constants.CLASS_PROFILE_IMG_CONTAINER}>
             <Avatar id={id} name={name} avatarUrl={avatarUrl} />

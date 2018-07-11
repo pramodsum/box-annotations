@@ -2,6 +2,8 @@ import EventEmitter from 'events';
 import * as util from './util';
 import * as constants from './constants';
 import AnnotationElement from './components/AnnotationElement';
+import AnnotationsContainer from './components/AnnotationsContainer';
+import DialogWrapper from './components/DialogWrapper';
 
 const POINT_ANNOTATION_ICON_HEIGHT = 31;
 const POINT_ANNOTATION_ICON_DOT_HEIGHT = 8;
@@ -331,9 +333,15 @@ class AnnotationDialog extends EventEmitter {
         sorted.sort((a, b) => new Date(a.created) - new Date(b.created));
 
         // Add sorted annotations to dialog
-        sorted.forEach((annotation) => {
-            this.addAnnotationElement(annotation);
+        const annotationContainerEl = this.dialogEl.querySelector(`.${CLASS_COMMENTS_CONTAINER}`);
+
+        const annotationContainerComponent = new DialogWrapper(annotationContainerEl, {
+            annotations: sorted,
+            localized: this.localized,
+            locale: this.locale,
+            onAnnotationDelete: this.deleteAnnotation.bind(this)
         });
+        annotationContainerComponent.renderAnnotation();
     }
 
     /**
@@ -549,30 +557,6 @@ class AnnotationDialog extends EventEmitter {
             default:
                 break;
         }
-    }
-
-    /**
-     * Adds an annotation to the dialog.
-     *
-     * @private
-     * @param {Annotation} annotation Annotation to add
-     * @return {void}
-     */
-    addAnnotationElement(annotation) {
-        const annotationContainerEl = this.dialogEl.querySelector(`.${CLASS_COMMENTS_CONTAINER}`);
-
-        const annotationEl = document.createElement('div');
-        annotationEl.classList.add(CLASS_COMMENT);
-        annotationEl.setAttribute('data-annotation-id', annotation.annotationID);
-        annotationContainerEl.appendChild(annotationEl);
-
-        const annotationComponent = new AnnotationElement(annotationEl, {
-            annotation,
-            localized: this.localized,
-            locale: this.locale,
-            onAnnotationDelete: this.deleteAnnotation.bind(this)
-        });
-        annotationComponent.renderAnnotation();
     }
 
     /**
