@@ -1,6 +1,7 @@
 import rbush from 'rbush';
 import EventEmitter from 'events';
 import { insertTemplate, isPending, replaceHeader, hasValidBoundaryCoordinates } from '../util';
+import Timer from '../Timer';
 import {
     CLASS_HIDDEN,
     CLASS_ACTIVE,
@@ -13,6 +14,15 @@ import {
     TYPES,
     BORDER_OFFSET
 } from '../constants';
+import {
+    ANNOTATIONS_EVENT,
+    ERROR_CODE,
+    ANNOTATIONS_ERROR,
+    ANNOTATIONS_METRIC,
+    LOAD_METRIC,
+    DURATION_METRIC,
+    ANNOTATIONS_END_EVENT
+} from '../events';
 
 class AnnotationModeController extends EventEmitter {
     /** @property {Object} - Object containing annotation threads */
@@ -38,6 +48,7 @@ class AnnotationModeController extends EventEmitter {
      */
     init(data) {
         this.container = data.container;
+        this.fileVersionId = data.fileVersionId;
         this.annotatedElement = data.annotatedElement;
         this.mode = data.mode;
         this.annotator = data.annotator;
@@ -409,13 +420,21 @@ class AnnotationModeController extends EventEmitter {
      * @return {void}
      */
     render() {
-        if (!this.threads) {
+        if (!Object.keys(this.threads).length) {
             return;
+        }
+
+        if (this.loadMetricTag) {
+            Timer.start(this.loadMetricTag);
         }
 
         Object.keys(this.threads).forEach((pageNum) => {
             this.renderPage(pageNum);
         });
+
+        if (this.loadMetricTag) {
+            Timer.stop(this.loadMetricTag);
+        }
     }
 
     /**

@@ -12,6 +12,8 @@ import {
 } from '../constants';
 import CreateAnnotationDialog from '../CreateAnnotationDialog';
 import { isInDialog, replaceHeader, isInAnnotationOrMarker } from '../util';
+import Timer from '../Timer';
+import { LOAD_METRIC } from '../events';
 
 class PointModeController extends AnnotationModeController {
     /** @property {HTMLElement} - The button to exit point annotation mode */
@@ -20,6 +22,8 @@ class PointModeController extends AnnotationModeController {
     /** @inheritdoc */
     init(data) {
         super.init(data);
+
+        this.loadMetricTag = Timer.createTag(this.fileVersionId, LOAD_METRIC.pointAnnotationsLoadTime);
 
         // If the header coming from the preview options is not none (e.g.
         // light, dark, or no value given), then we want to use our draw

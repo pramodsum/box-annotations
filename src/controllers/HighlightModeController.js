@@ -7,8 +7,21 @@ import {
     CLASS_ANNOTATION_LAYER_HIGHLIGHT,
     CLASS_ANNOTATION_LAYER_HIGHLIGHT_COMMENT
 } from '../constants';
+import { LOAD_METRIC } from '../events';
+import Timer from '../Timer';
 
 class HighlightModeController extends AnnotationModeController {
+    /** @inheritdoc */
+    init(data) {
+        super.init(data);
+
+        const loadMetricName =
+            this.mode === TYPES.plainHighlight
+                ? LOAD_METRIC.plainHighlightAnnotationsLoadTime
+                : LOAD_METRIC.highlightCommentAnnotationsLoadTime;
+        this.loadMetricTag = Timer.createTag(this.fileVersionId, loadMetricName);
+    }
+
     /**
      * Handles annotation thread events and emits them to the viewer
      *

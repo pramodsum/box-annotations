@@ -2,6 +2,7 @@ import EventEmitter from 'events';
 import AnnotationService from './AnnotationService';
 import * as util from './util';
 import './Annotator.scss';
+import Timer from './Timer';
 import {
     CLASS_HIDDEN,
     DATA_TYPE_ANNOTATION_DIALOG,
@@ -16,6 +17,15 @@ import {
     CONTROLLER_EVENT,
     CLASS_ANNOTATIONS_LOADED
 } from './constants';
+import {
+    ANNOTATIONS_EVENT,
+    ERROR_CODE,
+    ANNOTATIONS_ERROR,
+    ANNOTATIONS_METRIC,
+    LOAD_METRIC,
+    DURATION_METRIC,
+    ANNOTATIONS_END_EVENT
+} from './events';
 
 class Annotator extends EventEmitter {
     //--------------------------------------------------------------------------
@@ -63,6 +73,10 @@ class Annotator extends EventEmitter {
             anonymousUserName: this.localized.anonymousUserName
         });
 
+        // Start the annotations duration timer when the user starts to perceive annotations' load
+        const durationTag = Timer.createTag(this.fileVersionId, DURATION_METRIC);
+        Timer.start(durationTag);
+
         // Get applicable annotation mode controllers
         const { CONTROLLERS } = this.options.annotator || {};
         this.modeControllers = CONTROLLERS || {};
@@ -91,6 +105,22 @@ class Annotator extends EventEmitter {
         this.unbindDOMListeners();
         this.unbindCustomListenersOnService();
         this.removeListener(ANNOTATOR_EVENT.scale, this.scaleAnnotations);
+
+        // Log an annotations end event
+        const durationTag = Timer.createTag(this.fileVersionId, DURATION_METRIC);
+        const durationTimer = Timer.get(durationTag);
+        Timer.stop(durationTag);
+
+        const event = {
+            event_name: ANNOTATIONS_END_EVENT,
+            value: {
+                duration: durationTimer ? durationTimer.elapsed : null
+            },
+            ...this.createLogEvent()
+        };
+
+        Timer.reset(durationTag);
+        this.emit(ANNOTATIONS_METRIC, event);
     }
 
     /**
@@ -147,11 +177,13 @@ class Annotator extends EventEmitter {
      * @return {void}
      */
     loadAnnotations() {
+        console.log('load()');
         this.fetchPromise
             .then(() => {
                 this.generateThreadMap(this.threadMap);
                 this.render();
                 this.annotatedElement.classList.add(CLASS_ANNOTATIONS_LOADED);
+                this.emitLoadMetrics();
             })
             .catch((error) => {
                 this.emit(ANNOTATOR_EVENT.loadError, error);
@@ -243,6 +275,7 @@ class Annotator extends EventEmitter {
             const controller = this.modeControllers[type];
             controller.init({
                 container: this.container,
+                fileVersionId: this.fileVersionId,
                 annotatedElement: this.annotatedElement,
                 mode: type,
                 modeButton: this.modeButtons[type],
@@ -326,15 +359,20 @@ class Annotator extends EventEmitter {
      * @return {Promise} Promise for fetching saved annotations
      */
     fetchAnnotations() {
+        console.log('fetch()');
         // Do not load any pre-existing annotations if the user does not have
         // the correct permissions
         if (!this.permissions.canViewAllAnnotations && !this.permissions.canViewOwnAnnotations) {
             return Promise.resolve({});
         }
 
+        const fetchTag = Timer.createTag(this.fileVersionId, LOAD_METRIC.fetchResponseTime);
+        Timer.start(fetchTag);
+
         return this.annotationService
             .getThreadMap(this.fileVersionId)
             .then((threads) => {
+                Timer.stop(fetchTag); // Stop timer for file info time event.
                 this.threadMap = threads;
                 this.emit(ANNOTATOR_EVENT.fetch);
             })
@@ -724,6 +762,85 @@ class Annotator extends EventEmitter {
             fileVersionId: this.fileVersionId,
             fileId: this.fileId
         });
+    }
+
+    /**
+     * Create a generic log Object.
+     *
+     * @private
+     * @return {Object} Log details for viewer session and current file.
+     */
+    createLogEvent() {
+        const log = {
+            // timestamp: getISOTime(),
+            file_id: this.fileId,
+            file_version_id: this.fileVersionId,
+            content_type: this.options.annotator.NAME,
+            locale: this.locale,
+            isMobile: this.isMobile,
+            hasTouch: this.hasTouch,
+            num_annotations: Object.keys(this.threadMap).length
+        };
+
+        return log;
+    }
+
+    /**
+     * Load metrics behave slightly different than other metrics, in that they have
+     * higher level properties that do not fit into the general purpose "value" and "event_name".
+     * A value of 0 means that the load milestone was never reached.
+     *
+     * @private
+     * @return {void}
+     */
+    emitLoadMetrics() {
+        if (!this.fileVersionId) {
+            return;
+        }
+
+        const durationTag = Timer.createTag(this.fileVersionId, DURATION_METRIC);
+        const fetchTag = Timer.createTag(this.fileVersionId, LOAD_METRIC.fetchResponseTime);
+        const pointTag = Timer.createTag(this.fileVersionId, LOAD_METRIC.pointAnnotationsLoadTime);
+        const plainHighlightTag = Timer.createTag(this.fileVersionId, LOAD_METRIC.plainHighlightAnnotationsLoadTime);
+        const highlightCommentTag = Timer.createTag(
+            this.fileVersionId,
+            LOAD_METRIC.highlightCommentAnnotationsLoadTime
+        );
+        const drawTag = Timer.createTag(this.fileVersionId, LOAD_METRIC.drawAnnotationsLoadTime);
+
+        // Do nothing if there is nothing worth logging.
+        const durationTime = Timer.get(fetchTag) || {};
+        if (!durationTime.elapsed) {
+            Timer.reset([durationTag, fetchTag, pointTag, plainHighlightTag, highlightCommentTag]);
+            return;
+        }
+
+        const timerList = [
+            // loadTag,
+            Timer.get(fetchTag) || {},
+            Timer.get(pointTag) || {},
+            Timer.get(plainHighlightTag) || {},
+            Timer.get(highlightCommentTag) || {},
+            Timer.get(drawTag) || {}
+        ];
+        const times = timerList.map((timer) => parseInt(timer.elapsed, 10) || 0);
+        const total = times.reduce((acc, current) => acc + current);
+
+        const event = {
+            event_name: LOAD_METRIC.annotationsLoadEvent,
+            value: total, // Sum of all available load times.
+            [DURATION_METRIC]: parseInt(Timer.get(durationTag).elapsed, 10),
+            [LOAD_METRIC.fetchResponseTime]: times[0],
+            [LOAD_METRIC.pointAnnotationsLoadTime]: times[1],
+            [LOAD_METRIC.plainHighlightAnnotationsLoadTime]: times[2],
+            [LOAD_METRIC.highlightCommentAnnotationsLoadTime]: times[3],
+            [LOAD_METRIC.drawAnnotationsLoadTime]: times[4],
+            ...this.createLogEvent()
+        };
+
+        this.emit(ANNOTATIONS_METRIC, event);
+
+        Timer.reset([durationTag, fetchTag, pointTag, plainHighlightTag, highlightCommentTag]);
     }
 }
 

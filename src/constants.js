@@ -247,7 +247,9 @@ export const HIGHLIGHT_FILL = {
 export const ANNOTATOR_EVENT = {
     fetch: 'annotationsfetched',
     error: 'annotationerror',
-    scale: 'scaleannotations'
+    scale: 'scaleannotations',
+    destroy: 'annotationsdestroyed',
+    metric: 'annotations_metric'
 };
 
 export const THREAD_EVENT = {

@@ -21,6 +21,8 @@ import {
     CLASS_ANNOTATION_DRAW_MODE,
     CLASS_ANNOTATION_POINT_MARKER
 } from '../constants';
+import { LOAD_METRIC } from '../events';
+import Timer from '../Timer';
 
 class DrawingModeController extends AnnotationModeController {
     /** @property {DrawingThread} - The currently selected DrawingThread */
@@ -41,6 +43,8 @@ class DrawingModeController extends AnnotationModeController {
     /** @inheritdoc */
     init(data) {
         super.init(data);
+
+        this.loadMetricTag = Timer.createTag(this.fileVersionId, LOAD_METRIC.drawAnnotationsLoadTime);
 
         // If the header coming from the preview options is not none (e.g.
         // light, dark, or no value given), then we want to use our draw
