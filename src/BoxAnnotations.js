@@ -1,3 +1,4 @@
+import EventEmitter from 'events';
 import DocAnnotator from './doc/DocAnnotator';
 import ImageAnnotator from './image/ImageAnnotator';
 import DrawingModeController from './controllers/DrawingModeController';
@@ -45,7 +46,7 @@ const ANNOTATOR_TYPE_CONTROLLERS = {
     }
 };
 
-class BoxAnnotations {
+class BoxAnnotations extends EventEmitter {
     /**
      * [constructor]
      *
@@ -53,8 +54,23 @@ class BoxAnnotations {
      * @return {BoxAnnotations} BoxAnnotations instance
      */
     constructor(viewerOptions = {}) {
+        super();
+
         this.annotators = ANNOTATORS;
         this.viewerOptions = viewerOptions;
+    }
+
+    /**
+     * [destructor]
+     *
+     * @return {void}
+     */
+    destroy() {
+        // Destroy the annotator
+        if (this.annotator && typeof this.annotator.destroy === 'function') {
+            this.annotator.removeAllListeners();
+            this.annotator.destroy();
+        }
     }
 
     /**
@@ -151,19 +167,26 @@ class BoxAnnotations {
      * @return {Object|null} A copy of the annotator to use, if available
      */
     determineAnnotator(options, viewerConfig = {}, disabledAnnotators = []) {
-        let modifiedAnnotator = null;
+        let modifiedAnnotatorConf = null;
 
         this.viewerConfig = viewerConfig;
         const hasAnnotationPermissions = canLoadAnnotations(options.file.permissions);
         const annotator = this.getAnnotatorsForViewer(options.viewer.NAME, disabledAnnotators);
         if (!hasAnnotationPermissions || !annotator || this.viewerConfig.enabled === false) {
-            return modifiedAnnotator;
+            return modifiedAnnotatorConf;
         }
 
-        modifiedAnnotator = Object.assign({}, annotator);
-        modifiedAnnotator.TYPE = this.getAnnotatorTypes(modifiedAnnotator);
+        modifiedAnnotatorConf = Object.assign({}, annotator);
+        modifiedAnnotatorConf.TYPE = this.getAnnotatorTypes(modifiedAnnotatorConf);
 
-        return modifiedAnnotator;
+        const annotatorOptions = Object.assign({}, options, {
+            annotator: modifiedAnnotatorConf
+        });
+
+        this.annotator = new modifiedAnnotatorConf.CONSTRUCTOR(annotatorOptions);
+        this.annotator.addListener('annotatorevent', this.emit);
+        this.emit('annotatorevent', this.annotator);
+        return this.annotator;
     }
 }
 
