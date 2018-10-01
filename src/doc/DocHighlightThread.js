@@ -105,11 +105,11 @@ class DocHighlightThread extends AnnotationThread {
      *
      * @override
      * @param {string} type Type of annotation
-     * @param {string} text Text of annotation to save
+     * @param {string} message Text of annotation to save
      * @return {void}
      */
-    saveAnnotation(type, text) {
-        super.saveAnnotation(type, text);
+    saveAnnotation(type, message) {
+        super.saveAnnotation(type, message);
         window.getSelection().removeAllRanges();
     }
 

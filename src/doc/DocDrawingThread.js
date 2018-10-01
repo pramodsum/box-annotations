@@ -147,10 +147,10 @@ class DocDrawingThread extends DrawingThread {
      *
      * @public
      * @param {string} type - Type of annotation
-     * @param {string} text - Text of annotation to save
+     * @param {string} message - Text of annotation to save
      * @return {void}
      */
-    saveAnnotation(type, text) {
+    saveAnnotation(type, message) {
         this.reset();
 
         // Only make save request to server if there exist paths to save
@@ -164,7 +164,7 @@ class DocDrawingThread extends DrawingThread {
             this.dialog.hide();
         }
 
-        super.saveAnnotation(type, text);
+        super.saveAnnotation(type, message);
 
         // Move the in-progress drawing to the concrete context
         this.createDialog();

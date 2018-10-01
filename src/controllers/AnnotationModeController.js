@@ -1,5 +1,6 @@
 import rbush from 'rbush';
 import EventEmitter from 'events';
+import AnnotationService from '../AnnotationService';
 import { insertTemplate, isPending, replaceHeader, hasValidBoundaryCoordinates } from '../util';
 import {
     CLASS_HIDDEN,
@@ -41,6 +42,7 @@ class AnnotationModeController extends EventEmitter {
         this.annotatedElement = data.annotatedElement;
         this.mode = data.mode;
         this.annotator = data.annotator;
+        this.annotationService = data.annotationService;
         this.permissions = data.permissions || {};
         this.localized = data.localized || {};
         this.hasTouch = data.options ? data.options.hasTouch : false;
@@ -503,6 +505,131 @@ class AnnotationModeController extends EventEmitter {
 
         // Get the threads that correspond to the point that was clicked on
         return this.threads[location.page].search(eventBoundary);
+    }
+
+    /**
+     * Saves an annotation.
+     *
+     * @param {string} type - Type of annotation
+     * @param {string} text - Text of annotation to save
+     * @return {Promise} - Annotation create promise
+     */
+    saveAnnotation(type, text) {
+        const annotationData = this.createAnnotationData(type, text);
+
+        // Save annotation on client
+        const tempAnnotationID = AnnotationService.generateID();
+        const tempAnnotationData = annotationData;
+        tempAnnotationData.id = tempAnnotationID;
+        tempAnnotationData.permissions = {
+            can_edit: true,
+            can_delete: true
+        };
+        const tempAnnotation = new Annotation(tempAnnotationData);
+        tempAnnotation.isPending = true;
+        this.annotations.push(tempAnnotation);
+
+        return this.annotationService
+            .create(annotationData)
+            .then((savedAnnotation) => this.updateTemporaryAnnotation(tempAnnotation, savedAnnotation))
+            .catch((error) => this.handleThreadSaveError(error, tempAnnotationID));
+    }
+
+    /**
+     * Deletes an annotation.
+     *
+     * @param {string} annotationIDToRemove - ID of annotation to delete
+     * @param {boolean} [useServer] - Whether or not to delete on server, default true
+     * @return {Promise} - Annotation delete promise
+     */
+    deleteAnnotation(annotationIDToRemove, useServer = true) {
+        // Ignore if no corresponding annotation exists in thread or user doesn't have permissions
+        const annotation = this.annotations.find(({ id }) => id === annotationIDToRemove);
+        if (!annotation) {
+            // Broadcast error
+            this.emit(THREAD_EVENT.deleteError);
+            /* eslint-disable no-console */
+            console.error(THREAD_EVENT.deleteError, `Annotation with ID ${annotationIDToRemove} could not be found.`);
+            /* eslint-enable no-console */
+            return Promise.reject();
+        }
+
+        if (annotation.permissions && !annotation.permissions.can_delete) {
+            // Broadcast error
+            this.emit(THREAD_EVENT.deleteError);
+            /* eslint-disable no-console */
+            console.error(
+                THREAD_EVENT.deleteError,
+                `User does not have the correct permissions to delete annotation with ID ${annotation.id}.`
+            );
+            /* eslint-enable no-console */
+            return Promise.reject();
+        }
+
+        // Delete annotation on client
+        this.annotations = this.annotations.filter(({ id }) => id !== annotationIDToRemove);
+
+        // If the user doesn't have permission to delete the entire highlight
+        // annotation, display the annotation as a plain highlight
+        let firstAnnotation = this.annotations[0];
+        let canDeleteAnnotation =
+            firstAnnotation && firstAnnotation.permissions && firstAnnotation.permissions.can_delete;
+        if (util.isPlainHighlight(this.annotations) && !canDeleteAnnotation) {
+            this.cancelFirstComment();
+
+            // If this annotation was the last one in the thread, destroy the thread
+        } else if (!firstAnnotation || util.isPlainHighlight(this.annotations)) {
+            if (this.isMobile && this.dialog) {
+                this.dialog.hideMobileDialog();
+                this.dialog.show(this.annotations);
+            }
+            this.destroy();
+
+            // Otherwise, remove deleted annotation from dialog
+        } else if (this.dialog) {
+            this.dialog.show(this.annotations);
+            this.showDialog();
+        }
+
+        if (!useServer) {
+            /* eslint-disable no-console */
+            console.error(
+                THREAD_EVENT.deleteError,
+                `Annotation with ID ${annotation.threadNumber} not deleted from server`
+            );
+            /* eslint-enable no-console */
+            return Promise.resolve();
+        }
+
+        // Delete annotation on server
+        return this.annotationService
+            .delete(annotationIDToRemove)
+            .then(() => {
+                // Ensures that blank highlight comment is also deleted when removing
+                // the last comment on a highlight
+                firstAnnotation = this.annotations[0];
+                canDeleteAnnotation =
+                    firstAnnotation && firstAnnotation.permissions && firstAnnotation.permissions.can_delete;
+                if (util.isPlainHighlight(this.annotations) && canDeleteAnnotation) {
+                    this.annotationService.delete(firstAnnotation.id);
+                }
+
+                // Broadcast thread cleanup if needed
+                firstAnnotation = this.annotations[0];
+                if (!firstAnnotation) {
+                    this.emit(THREAD_EVENT.threadCleanup);
+                }
+
+                // Broadcast annotation deletion event
+                this.emit(THREAD_EVENT.delete);
+            })
+            .catch((error) => {
+                // Broadcast error
+                this.emit(THREAD_EVENT.deleteError);
+                /* eslint-disable no-console */
+                console.error(THREAD_EVENT.deleteError, error.toString());
+                /* eslint-enable no-console */
+            });
     }
 
     /**
