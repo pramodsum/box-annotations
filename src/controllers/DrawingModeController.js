@@ -247,9 +247,6 @@ class DrawingModeController extends AnnotationModeController {
     exit() {
         this.currentThread = undefined;
 
-        const boundaries = this.annotatedElement.querySelectorAll('.ba-drawing-boundary');
-        boundaries.forEach((boundaryEl) => boundaryEl.parentNode.removeChild(boundaryEl));
-
         this.annotatedElement.classList.remove(CLASS_ANNOTATION_DRAW_MODE);
         super.exit();
     }
@@ -393,7 +390,6 @@ class DrawingModeController extends AnnotationModeController {
      */
     select(selectedDrawingThread) {
         selectedDrawingThread.show();
-        selectedDrawingThread.drawBoundary();
         selectedDrawingThread.renderAnnotationPopover();
         this.selectedThread = selectedDrawingThread;
     }

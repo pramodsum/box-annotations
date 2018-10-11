@@ -115,8 +115,7 @@ class DrawingThread extends AnnotationThread {
      */
     reset() {
         super.reset();
-
-        this.clearBoundary();
+        this.unmountPopover();
     }
 
     /**
@@ -222,7 +221,7 @@ class DrawingThread extends AnnotationThread {
             );
         }
 
-        this.clearBoundary();
+        this.unmountPopover();
 
         this.pathContainer.destroy();
         this.pathContainer = null;
@@ -271,7 +270,7 @@ class DrawingThread extends AnnotationThread {
                 this.unmountPopover();
             }
 
-            this.drawBoundary();
+            this.renderAnnotationPopover();
             this.emitAvailableActions();
         }
     }
@@ -295,7 +294,7 @@ class DrawingThread extends AnnotationThread {
                 this.unmountPopover();
             }
 
-            this.drawBoundary();
+            this.renderAnnotationPopover();
             this.emitAvailableActions();
         }
     }
@@ -367,8 +366,6 @@ class DrawingThread extends AnnotationThread {
             redo: availableActions.redoCount
         });
     }
-
-    drawBoundary() {}
 
     /**
      * Draw the pending path onto the DrawingThread CanvasContext. Should be used
@@ -444,18 +441,6 @@ class DrawingThread extends AnnotationThread {
      * @return {void}
      */
     getBrowserRectangularBoundary() {}
-
-    /**
-     * Clear any drawn boundary and associated dialog
-     *
-     * @return {void}
-     */
-    clearBoundary() {
-        const boundaryEl = this.annotatedElement.querySelector('.ba-drawing-boundary');
-        if (boundaryEl) {
-            boundaryEl.parentNode.removeChild(boundaryEl);
-        }
-    }
 
     /**
      * Create an annotation data object to pass to annotation service.

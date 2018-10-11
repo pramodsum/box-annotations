@@ -165,7 +165,6 @@ class DocDrawingThread extends DrawingThread {
     }
 
     hide() {
-        this.clearBoundary();
         this.unmountPopover();
     }
 
@@ -269,64 +268,6 @@ class DocDrawingThread extends DrawingThread {
 
         return [Math.max(x1, x2), Math.max(y1, y2)];
     }
-
-    /**
-     * Draw the boundary on a drawing thread that has been saved
-     *
-     * @protected
-     * @return {void}
-     */
-    drawBoundary = () => {
-        if (!this.location.page) {
-            return;
-        }
-
-        const boundaryEl = document.createElement('div');
-        boundaryEl.classList.add('ba-drawing-boundary');
-
-        const l1 = createLocation(this.minX, this.minY, this.location.dimensions);
-        const l2 = createLocation(this.maxX, this.maxY, this.location.dimensions);
-        const [x1, y1] = getBrowserCoordinatesFromLocation(l1, this.pageEl);
-        const [x2, y2] = getBrowserCoordinatesFromLocation(l2, this.pageEl);
-
-        const BOUNDARY_PADDING = 10;
-        boundaryEl.style.left = `${Math.min(x1, x2) - BOUNDARY_PADDING}px`;
-        boundaryEl.style.top = `${Math.min(y1, y2) + BOUNDARY_PADDING / 2}px`;
-        boundaryEl.style.width = Math.abs(x2 - x1) + 2 * BOUNDARY_PADDING;
-        boundaryEl.style.height = Math.abs(y2 - y1) + 2 * BOUNDARY_PADDING;
-
-        const pageEl = this.annotatedElement.querySelector(`[data-page-number="${this.location.page}"]`);
-        pageEl.appendChild(boundaryEl);
-    };
-
-    /**
-     * Position the drawing dialog with an x,y browser coordinate
-     *
-     * @protected
-     * @return {void}
-     */
-    position = () => {
-        if (!this.pageEl) {
-            this.pageEl = this.annotatedElement.querySelector(`[data-page-number="${this.location.page}"]`);
-        }
-
-        // Show dialog so we can get width
-        const popoverEl = findElement(this.annotatedElement, '.ba-popover', this.renderAnnotationPopover);
-        const boundaryEl = findElement(this.annotatedElement, '.ba-drawing-boundary', this.drawBoundary);
-        const pageEl =
-            this.annotatedElement.querySelector(`[data-page-number="${this.location.page}"]`) || this.annotatedElement;
-        const pageDimensions = pageEl.getBoundingClientRect();
-        const boundaryDimensions = boundaryEl.getBoundingClientRect();
-        const popoverDimensions = popoverEl.getBoundingClientRect();
-
-        const popoverWidth = popoverDimensions.width;
-        const popoverY = boundaryEl.offsetTop + boundaryDimensions.height + PAGE_PADDING_TOP;
-        let popoverX = boundaryEl.offsetLeft + boundaryDimensions.width / 2 - popoverWidth / 2;
-        popoverX = repositionCaret(popoverEl, popoverX, popoverWidth, popoverX, pageDimensions.width);
-
-        popoverEl.style.left = `${popoverX}px`;
-        popoverEl.style.top = `${popoverY}px`;
-    };
 }
 
 export default DocDrawingThread;

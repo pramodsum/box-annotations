@@ -456,29 +456,29 @@ export function repositionCaret(dialogEl, dialogX, highlightDialogWidth, browser
     // ${pageWidth}px
     const dialogPastLeft = dialogX < 0;
     const dialogPastRight = dialogX + highlightDialogWidth > pageWidth;
-    const annotationCaretEl = dialogEl.querySelector(SELECTOR_ANNOTATION_CARET);
+    // const annotationCaretEl = dialogEl.querySelector(SELECTOR_ANNOTATION_CARET);
 
     if (dialogPastLeft && !dialogPastRight) {
-        // Leave a minimum of 10 pixels so caret doesn't go off edge
-        const caretLeftX = Math.max(10, browserX);
-        annotationCaretEl.style.left = `${caretLeftX}px`;
+        // // Leave a minimum of 10 pixels so caret doesn't go off edge
+        // const caretLeftX = Math.max(10, browserX);
+        // annotationCaretEl.style.left = `${caretLeftX}px`;
 
         return 0;
     }
 
     if (dialogPastRight && !dialogPastLeft) {
-        // Leave a minimum of 10 pixels so caret doesn't go off edge
-        const caretRightX = Math.max(10, pageWidth - browserX);
+        // // Leave a minimum of 10 pixels so caret doesn't go off edge
+        // const caretRightX = Math.max(10, pageWidth - browserX);
 
-        // We set the 'left' property even when we have caretRightX for
-        // IE10/11
-        annotationCaretEl.style.left = `${highlightDialogWidth - caretRightX}px`;
+        // // We set the 'left' property even when we have caretRightX for
+        // // IE10/11
+        // annotationCaretEl.style.left = `${highlightDialogWidth - caretRightX}px`;
 
         return pageWidth - highlightDialogWidth;
     }
 
-    // Reset caret to center
-    annotationCaretEl.style.left = '50%';
+    // // Reset caret to center
+    // annotationCaretEl.style.left = '50%';
 
     return dialogX;
 }

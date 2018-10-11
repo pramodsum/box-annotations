@@ -177,10 +177,12 @@ class AnnotationThread extends EventEmitter {
                 onCancel={this.cancelUnsavedAnnotation}
                 onCreate={this.saveAnnotation}
                 isPending={isPending}
+                location={this.location}
+                parentEl={pageEl}
             />,
             annotationDialogLayer
         );
-        this.position();
+        // this.position();
     };
 
     unmountPopover = () => {

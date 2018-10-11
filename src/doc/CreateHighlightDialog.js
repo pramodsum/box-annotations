@@ -115,6 +115,7 @@ class CreateHighlightDialog extends EventEmitter {
                 onCreate={this.onCreate}
                 onCommentClick={this.onCommentClick}
                 isPending={true}
+                location={this.location}
             />,
             this.parentEl
         );

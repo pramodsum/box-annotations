@@ -3,9 +3,11 @@ import React from 'react';
 import classNames from 'classnames';
 import noop from 'lodash/noop';
 import Overlay from 'box-react-ui/lib/components/flyout/Overlay';
+import Flyout from 'box-react-ui/lib/components/flyout/Flyout';
 
 import Internationalize from '../Internationalize';
 import CommentList from '../CommentList';
+import AnnotationTether from './AnnotationTether';
 
 import './AnnotationPopover.scss';
 import ActionControls from '../ActionControls';
@@ -20,7 +22,8 @@ type Props = {
     onCommentClick: Function,
     isPending: boolean,
     language?: string,
-    messages?: StringMap
+    messages?: StringMap,
+    parentEl: HTMLElement
 } & Annotation;
 
 class AnnotationPopover extends React.PureComponent<Props> {
@@ -37,8 +40,8 @@ class AnnotationPopover extends React.PureComponent<Props> {
     };
 
     componentDidMount() {
-        const { position } = this.props;
-        position();
+        // const { position } = this.props;
+        // position();
     }
 
     render() {
@@ -56,16 +59,18 @@ class AnnotationPopover extends React.PureComponent<Props> {
             onCancel,
             onCreate,
             onCommentClick,
+            location,
+            parentEl,
             language,
             messages: intlMessages
         } = this.props;
 
         return (
             <Internationalize language={language} messages={intlMessages}>
-                <div className='ba-popover'>
-                    <span className='ba-popover-caret' />
+                <Flyout className='ba-popover' isVisibleByDefault={true} position='bottom-center'>
+                    <AnnotationTether type={type} location={location} parentEl={parentEl} />
                     <Overlay
-                        className={classNames('ba-popover-content', {
+                        className={classNames('ba-popover-overlay', {
                             'ba-inline': !isPending && !comments,
                             'ba-create-popover': isPending
                         })}
@@ -92,7 +97,7 @@ class AnnotationPopover extends React.PureComponent<Props> {
                             />
                         )}
                     </Overlay>
-                </div>
+                </Flyout>
             </Internationalize>
         );
     }
