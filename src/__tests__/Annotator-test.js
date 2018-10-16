@@ -10,17 +10,19 @@ import {
     SELECTOR_ANNOTATED_ELEMENT
 } from '../constants';
 
-const api = {
-    formatAnnotation: jest.fn()
-};
+let annotator;
+let controller;
+let thread;
+const html = `<div class="bp-header"></div>
+<button class="bp-btn-annotate"></button>
+<div class="annotated-element"></div>`;
 
 describe('Annotator', () => {
     let rootElement;
-    let annotator;
-    let controller;
-    let thread;
-    const html = `<button class="bp-btn-annotate"></button>
-    <div class="annotated-element"></div>`;
+
+    const api = {
+        formatAnnotation: jest.fn()
+    };
 
     beforeEach(() => {
         rootElement = document.createElement('div');
