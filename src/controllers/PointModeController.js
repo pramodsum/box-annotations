@@ -61,38 +61,6 @@ class PointModeController extends AnnotationModeController {
         this.hideSharedDialog();
     }
 
-    /**
-     * Notify listeners of post event and then clear the create dialog
-     *
-     * @private
-     * @param {string} commentText Annotation comment text
-     * @return {void}
-     */
-    onDialogPost(commentText) {
-        this.emit(CONTROLLER_EVENT.createThread, {
-            commentText,
-            lastPointEvent: this.lastPointEvent,
-            pendingThreadID: this.pendingThreadID
-        });
-
-        this.onDialogCancel();
-    }
-
-    /**
-     * Hides the shared mobile dialog and clears associated data
-     *
-     * @protected
-     * @return {void}
-     */
-    hideSharedDialog() {
-        this.lastPointEvent = null;
-        this.pendingThreadID = null;
-
-        if (this.createDialog && this.createDialog.isVisible) {
-            this.createDialog.hide();
-        }
-    }
-
     /** @inheritdoc */
     setupHandlers(): void {
         this.pointClickHandler = this.pointClickHandler.bind(this);

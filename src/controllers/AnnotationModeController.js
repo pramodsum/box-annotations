@@ -298,6 +298,13 @@ class AnnotationModeController extends EventEmitter {
      */
     getThreadParams(annotations: Array<Annotation>, location: Location, type: AnnotationType): ?Object {
         const firstAnnotation = annotations[0];
+        const permissions = firstAnnotation
+            ? this.permissions
+            : {
+                ...this.permissions,
+                can_delete: true,
+                can_edit: true
+            };
         const params = {
             annotatedElement: this.annotatedElement,
             api: this.api,
@@ -309,7 +316,7 @@ class AnnotationModeController extends EventEmitter {
             locale: this.locale,
             location,
             type,
-            permissions: this.permissions,
+            permissions,
             localized: this.localized,
             threadID: get(firstAnnotation, 'id', null),
             threadNumber: get(firstAnnotation, 'threadNumber', null)

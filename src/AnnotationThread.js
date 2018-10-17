@@ -73,6 +73,14 @@ class AnnotationThread extends EventEmitter {
         this.annotations = data.annotations || [];
         this.annotations = this.annotations.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
 
+        const firstAnnotation = this.annotations[0];
+        if (firstAnnotation) {
+            this.permissions = {
+                ...this.permissions,
+                ...firstAnnotation.permissions
+            };
+        }
+
         this.regenerateBoundary();
 
         this.setup();
@@ -175,7 +183,7 @@ class AnnotationThread extends EventEmitter {
                 modifiedBy={get(firstAnnotation, 'modifiedBy', null)}
                 canAnnotate={this.permissions.can_annotate}
                 canComment={this.canComment}
-                canDelete={get(firstAnnotation, 'permissions.can_delete', false)}
+                canDelete={this.permissions.can_delete}
                 comments={comments}
                 position={this.position}
                 onDelete={this.deleteAnnotation}
@@ -190,6 +198,7 @@ class AnnotationThread extends EventEmitter {
 
     unmountPopover = () => {
         this.reset();
+        this.emit(THREAD_EVENT.hide);
 
         const pageEl = this.annotatedElement.querySelector(`[data-page-number="${this.location.page}"]`);
         const popoverLayer = pageEl.querySelector('.ba-dialog-layer');

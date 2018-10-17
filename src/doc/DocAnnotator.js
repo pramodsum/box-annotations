@@ -6,7 +6,6 @@ import rangyHighlight from 'rangy/lib/rangy-highlighter';
 import rangySaveRestore from 'rangy/lib/rangy-selectionsaverestore';
 /* eslint-enable no-unused-vars */
 import Annotator from '../Annotator';
-import CreateHighlightDialog from './CreateHighlightDialog';
 import * as util from '../util';
 import * as docUtil from './docUtil';
 import {
@@ -41,9 +40,6 @@ const ANNOTATION_LAYER_CLASSES = [
 ];
 
 class DocAnnotator extends Annotator {
-    /** @property {CreateHighlightDialog} - UI used to create new highlight annotations. */
-    createHighlightDialog;
-
     /** @property {Event} - For delaying creation of highlight quad points and dialog. Tracks the
      * current selection event, made in a previous event. */
     lastHighlightEvent;
@@ -62,30 +58,6 @@ class DocAnnotator extends Annotator {
 
     /** @property {Function} - Reference to filter function that has been bound TODO(@jholdstock): remove on refactor. */
     showFirstDialogFilter;
-
-    /**
-     * [destructor]
-     *
-     * @return {void}
-     */
-    destroy() {
-        super.destroy();
-        if (!this.createHighlightDialog) {
-            return;
-        }
-
-        if (this.commentHighlightEnabled) {
-            this.createHighlightDialog.removeListener(CREATE_EVENT.comment, this.highlightCurrentSelection);
-            this.createHighlightDialog.removeListener(CREATE_EVENT.post, this.createHighlightThread);
-        }
-
-        if (this.plainHighlightEnabled) {
-            this.createHighlightDialog.removeListener(CREATE_EVENT.plain, this.createPlainHighlight);
-        }
-
-        this.createHighlightDialog.destroy();
-        this.createHighlightDialog = null;
-    }
 
     /** @inheritdoc */
     init(initialScale) {
@@ -242,10 +214,6 @@ class DocAnnotator extends Annotator {
         // Scale existing canvases on re-render
         this.scaleAnnotationCanvases(pageNum);
         super.renderPage(pageNum);
-
-        if (this.createHighlightDialog) {
-            this.createHighlightDialog.unmountPopover();
-        }
     }
 
     /**
@@ -287,50 +255,11 @@ class DocAnnotator extends Annotator {
         }
 
         // Explicit scoping
-        this.highlightCreateHandler = this.highlightCreateHandler.bind(this);
-        this.highlightMouseupHandler = this.highlightMouseupHandler.bind(this);
-        this.highlightMousedownHandler = this.highlightMousedownHandler.bind(this);
-        this.hideCreateDialog = this.hideCreateDialog.bind(this);
-
         this.clickThread = this.clickThread.bind(this);
 
         if (this.isMobile || this.hasTouch) {
             this.onSelectionChange = this.onSelectionChange.bind(this);
         }
-
-        this.createHighlightDialog = new CreateHighlightDialog(this.container, {
-            isMobile: this.isMobile,
-            hasTouch: this.hasTouch,
-            allowComment: this.commentHighlightEnabled,
-            allowHighlight: this.plainHighlightEnabled,
-            localized: this.localized
-        });
-
-        this.createHighlightDialog.addListener(CREATE_EVENT.init, () =>
-            this.emit(THREAD_EVENT.pending, TYPES.highlight)
-        );
-
-        if (this.commentHighlightEnabled) {
-            this.highlightCurrentSelection = this.highlightCurrentSelection.bind(this);
-            this.createHighlightDialog.addListener(CREATE_EVENT.comment, this.highlightCurrentSelection);
-
-            this.createHighlightThread = this.createHighlightThread.bind(this);
-            this.createHighlightDialog.addListener(CREATE_EVENT.post, this.createHighlightThread);
-        }
-
-        if (this.plainHighlightEnabled) {
-            this.createPlainHighlight = this.createPlainHighlight.bind(this);
-            this.createHighlightDialog.addListener(CREATE_EVENT.plain, this.createPlainHighlight);
-        }
-
-        // Init rangy and rangy highlight
-        this.highlighter = rangy.createHighlighter();
-        this.highlighter.addClassApplier(
-            rangy.createClassApplier(CLASS_RANGY_HIGHLIGHT, {
-                ignoreWhiteSpace: true,
-                tagNames: ['span', 'a']
-            })
-        );
     }
 
     /**
@@ -342,16 +271,6 @@ class DocAnnotator extends Annotator {
      */
     bindDOMListeners() {
         super.bindDOMListeners();
-
-        // Highlight listeners on desktop & mobile
-        if (this.plainHighlightEnabled || this.commentHighlightEnabled) {
-            this.annotatedElement.addEventListener('mouseup', this.highlightMouseupHandler);
-            this.annotatedElement.addEventListener('wheel', this.hideCreateDialog);
-
-            if (this.hasTouch) {
-                this.annotatedElement.addEventListener('touchend', this.hideCreateDialog);
-            }
-        }
 
         if (this.hasTouch) {
             this.annotatedElement.addEventListener('touchstart', this.clickHandler);
@@ -366,10 +285,6 @@ class DocAnnotator extends Annotator {
 
         if (this.hasTouch || this.isMobile) {
             document.addEventListener('selectionchange', this.onSelectionChange);
-        } else {
-            this.annotatedElement.addEventListener('dblclick', this.highlightMouseupHandler);
-            this.annotatedElement.addEventListener('mousedown', this.highlightMousedownHandler);
-            this.annotatedElement.addEventListener('contextmenu', this.highlightMousedownHandler);
         }
     }
 
@@ -382,10 +297,6 @@ class DocAnnotator extends Annotator {
      */
     unbindDOMListeners() {
         super.unbindDOMListeners();
-
-        this.annotatedElement.removeEventListener('mouseup', this.highlightMouseupHandler);
-        this.annotatedElement.removeEventListener('wheel', this.hideCreateDialog);
-        this.annotatedElement.removeEventListener('touchend', this.hideCreateDialog);
 
         if (this.highlightThrottleHandle) {
             cancelAnimationFrame(this.highlightThrottleHandle);
@@ -401,9 +312,6 @@ class DocAnnotator extends Annotator {
             document.removeEventListener('selectionchange', this.onSelectionChange);
         } else {
             this.annotatedElement.removeEventListener('click', this.clickHandler);
-            this.annotatedElement.removeEventListener('dblclick', this.highlightMouseupHandler);
-            this.annotatedElement.removeEventListener('mousedown', this.highlightMousedownHandler);
-            this.annotatedElement.removeEventListener('contextmenu', this.highlightMousedownHandler);
         }
     }
 
@@ -449,14 +357,6 @@ class DocAnnotator extends Annotator {
         super.removeThreadFromSharedDialog();
     }
 
-    hideCreateDialog(event) {
-        if (!this.createHighlightDialog || !event || util.isInDialog(event)) {
-            return;
-        }
-
-        this.createHighlightDialog.unmountPopover();
-    }
-
     /**
      * Clears the text selection and hides the create highlight dialog
      *
@@ -465,72 +365,7 @@ class DocAnnotator extends Annotator {
      */
     resetHighlightSelection(event) {
         this.isCreatingHighlight = false;
-        this.hideCreateDialog(event);
         document.getSelection().removeAllRanges();
-    }
-
-    //--------------------------------------------------------------------------
-    // Private
-    //--------------------------------------------------------------------------
-
-    /**
-     * Creates a plain highlight annotation.
-     *
-     * @private
-     * @return {void}
-     */
-    createPlainHighlight() {
-        this.highlightCurrentSelection();
-        this.createHighlightThread();
-    }
-
-    /**
-     * Creates an highlight annotation thread, adds it to in-memory map, and returns it.
-     *
-     * @private
-     * @param {string} [commentText] If provided, this will save a highlight comment annotation, with commentText
-     * being the text as the first comment in the thread.
-     * @return {DocHighlightThread} Created doc highlight annotation thread
-     */
-    createHighlightThread(commentText) {
-        // Empty string will be passed in if no text submitted in comment
-        if (commentText === '' || !this.lastHighlightEvent) {
-            return null;
-        }
-
-        const isCreateDialogVisible = this.createHighlightDialog && this.createHighlightDialog.isVisible;
-        if (isCreateDialogVisible) {
-            this.createHighlightDialog.unmountPopover();
-        }
-
-        this.isCreatingHighlight = false;
-
-        const highlightType = commentText ? TYPES.highlight_comment : TYPES.highlight;
-        const location = this.getLocationFromEvent(this.lastHighlightEvent, highlightType);
-        const controller = this.modeControllers[highlightType];
-
-        this.highlighter.removeAllHighlights();
-        this.resetHighlightSelection(this.lastHighlightEvent);
-
-        if (!location || !controller) {
-            return null;
-        }
-
-        const annotations = [];
-        this.lastHighlightEvent = null;
-        this.lastSelection = null;
-
-        const thread = controller.registerThread(annotations, location, highlightType);
-        if (!thread) {
-            this.handleValidationError();
-            return null;
-        }
-
-        thread.state = STATES.active;
-        thread.show();
-        thread.saveAnnotation(highlightType, commentText);
-        this.emit(THREAD_EVENT.threadSave, thread.getThreadEventData());
-        return thread;
     }
 
     /**
@@ -567,16 +402,11 @@ class DocAnnotator extends Annotator {
         // Bail if mid highlight and tapping on the screen
         if (!docUtil.isValidSelection(selection)) {
             this.lastHighlightEvent = null;
-            this.createHighlightDialog.unmountPopover();
             this.highlighter.removeAllHighlights();
             return;
         }
 
-        this.selectionEndTimeout = setTimeout(() => {
-            if (this.createHighlightDialog) {
-                this.createHighlightDialog.show(selection);
-            }
-        }, SELECTION_TIMEOUT);
+        this.selectionEndTimeout = setTimeout(() => {}, SELECTION_TIMEOUT);
 
         const { page } = util.getPageInfo(event.target);
 
@@ -633,28 +463,6 @@ class DocAnnotator extends Annotator {
     }
 
     /**
-     * Mousedown handler on annotated element. Also delegates to mousedown
-     * handler for each thread.
-     *
-     * @private
-     * @param {Event} event DOM event
-     * @return {void}
-     */
-    highlightMousedownHandler = (event) => {
-        this.isCreatingHighlight = true;
-        this.mouseX = event.clientX;
-        this.mouseY = event.clientY;
-
-        if (this.plainHighlightEnabled) {
-            this.modeControllers[TYPES.highlight].applyActionToThreads((thread) => thread.onMousedown());
-        }
-
-        if (this.commentHighlightEnabled) {
-            this.modeControllers[TYPES.highlight_comment].applyActionToThreads((thread) => thread.onMousedown());
-        }
-    };
-
-    /**
      * Returns whether any mode controller is currently creating an
      * annotation thread
      *
@@ -672,69 +480,6 @@ class DocAnnotator extends Annotator {
         });
         return isPending;
     }
-
-    /**
-     * Mouseup handler. Switches between creating a highlight and delegating
-     * to highlight click handlers depending on whether mouse moved since
-     * mousedown.
-     *
-     * @private
-     * @param {Event} event DOM event
-     * @return {void}
-     */
-    highlightMouseupHandler = (event) => {
-        this.isCreatingHighlight = false;
-
-        const popoverEl = this.annotatedElement.querySelector('.ba-popover');
-        if (util.isInAnnotationOrMarker(event, popoverEl)) {
-            return;
-        }
-
-        if (this.highlighter) {
-            this.highlighter.removeAllHighlights();
-        }
-
-        const hasMouseMoved =
-            (this.mouseX && this.mouseX !== event.clientX) || (this.mouseY && this.mouseY !== event.clientY);
-
-        // Creating highlights is disabled on mobile for now since the
-        // event we would listen to, selectionchange, fires continuously and
-        // is unreliable. If the mouse moved or we double clicked text,
-        // we trigger the create handler instead of the click handler
-        if ((this.createHighlightDialog && hasMouseMoved) || event.type === 'dblclick') {
-            this.highlightCreateHandler(event);
-        }
-    };
-
-    /**
-     * Handler for creating a pending highlight thread from the current
-     * selection. Default creates highlight threads as ANNOTATION_TYPE_HIGHLIGHT.
-     * If the user adds a comment, the type changes to
-     * ANNOTATION_TYPE_HIGHLIGHT_COMMENT.
-     *
-     * @private
-     * @param {Event} event DOM event
-     * @return {void}
-     */
-    highlightCreateHandler = (event) => {
-        event.stopPropagation();
-        event.preventDefault();
-
-        const selection = window.getSelection();
-        if (!docUtil.isValidSelection(selection)) {
-            return;
-        }
-
-        // Select page of first node selected
-        const { pageEl } = util.getPageInfo(selection.anchorNode);
-        if (!pageEl) {
-            return;
-        }
-
-        this.createHighlightDialog.show(selection);
-        this.isCreatingHighlight = true;
-        this.lastHighlightEvent = event;
-    };
 
     /**
      * Highlight click handler. Delegates click event to click handlers for
@@ -875,9 +620,6 @@ class DocAnnotator extends Annotator {
         switch (data.event) {
             case CONTROLLER_EVENT.toggleMode:
                 this.resetHighlightSelection(data.event);
-                break;
-            case CONTROLLER_EVENT.bindDOMListeners:
-                this.hideCreateDialog(data);
                 break;
             case CONTROLLER_EVENT.renderPage:
                 this.renderPage(data.data);
