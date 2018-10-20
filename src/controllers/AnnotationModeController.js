@@ -130,7 +130,7 @@ class AnnotationModeController extends EventEmitter {
     destroy(): void {
         Object.keys(this.annotations).forEach((pageNum) => {
             const pageThreads = this.annotations[pageNum].all() || [];
-            pageThreads.forEach(this.unregisterThread);
+            pageThreads.forEach((thread) => this.unregisterThread(thread));
         });
 
         if (this.buttonEl) {
@@ -167,9 +167,7 @@ class AnnotationModeController extends EventEmitter {
             this.buttonEl.classList.remove(CLASS_HIDDEN);
 
             // $FlowFixMe
-            this.toggleMode = this.toggleMode.bind(this);
-            // $FlowFixMe
-            this.buttonEl.addEventListener('click', this.toggleMode);
+            this.buttonEl.addEventListener('click', (event) => this.toggleMode(event));
         }
     }
 
@@ -351,10 +349,7 @@ class AnnotationModeController extends EventEmitter {
             /* eslint-enable new-cap */
         }
         this.annotations[page].insert(thread);
-
-        let threadEventHandler = (data) => this.handleThreadEvents(thread, data);
-        threadEventHandler = threadEventHandler.bind(this);
-        thread.addListener('threadevent', threadEventHandler);
+        thread.addListener('threadevent', (data) => this.handleThreadEvents(thread, data));
 
         this.emit(CONTROLLER_EVENT.register, thread);
         return thread;
@@ -368,15 +363,15 @@ class AnnotationModeController extends EventEmitter {
      * @param {Object} annotation - The annotation with comments to register with the controller
      * @return {void}
      */
-    unregisterThread(thread: AnnotationThread): void {
+    unregisterThread = (thread: AnnotationThread): void => {
         if (!thread || !thread.location || !thread.location.page || !this.annotations[thread.location.page]) {
             return;
         }
 
         this.annotations[thread.location.page].remove(thread);
         this.emit(CONTROLLER_EVENT.unregister, thread);
-        thread.removeListener('threadevent', this.handleThreadEvents);
-    }
+        thread.removeListener('threadevent', (data) => this.handleThreadEvents(thread, data));
+    };
 
     /**
      * Apply predicate method to every thread on the specified page
