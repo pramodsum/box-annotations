@@ -127,7 +127,7 @@ class CreateHighlightDialog extends EventEmitter {
                 canDelete={true}
                 position={this.updatePosition}
                 onDelete={noop}
-                onCancel={this.onCancel}
+                onCancel={this.onCommentCancel}
                 onCreate={this.onCreate}
                 onCommentClick={this.onCommentClick}
                 isPending={true}
@@ -245,6 +245,10 @@ class CreateHighlightDialog extends EventEmitter {
     onCommentClick = () => {
         this.emit(CREATE_EVENT.comment);
         this.renderAnnotationPopover(TYPES.highlight_comment);
+    };
+
+    onCommentCancel = () => {
+        this.renderAnnotationPopover(TYPES.highlight);
     };
 }
 
