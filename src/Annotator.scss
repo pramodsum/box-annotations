@@ -117,19 +117,6 @@
     }
 }
 
-.ba-point-annotation-marker.ba-annotation-dialog-flipped {
-    path,
-    rect {
-        display: none;
-    }
-}
-
-.ba-annotation-dialog-flipped {
-    .ba-annotation-caret {
-        transform: rotate(180deg);
-    }
-}
-
 //------------------------------------------------------------------------------
 // CSS for highlights
 //------------------------------------------------------------------------------

@@ -53,7 +53,7 @@ export const SELECTOR_ANNOTATION_DIALOG = `.${CLASS_ANNOTATION_DIALOG}`;
 export const CLASS_ANNOTATION_CARET = 'ba-popover-caret';
 export const SELECTOR_ANNOTATION_CARET = `.${CLASS_ANNOTATION_CARET}`;
 
-export const CLASS_FLIPPED_DIALOG = 'ba-annotation-dialog-flipped';
+export const CLASS_FLIPPED_DIALOG = 'ba-popover-flipped';
 
 // Highlight dialog CSS constants
 export const CLASS_ANNOTATION_HIGHLIGHT_DIALOG = 'ba-annotation-highlight-dialog';
@@ -233,6 +233,8 @@ export const ERROR_TYPE = {
 
 export const POINT_ANNOTATION_ICON_HEIGHT = 31;
 export const POINT_ANNOTATION_ICON_DOT_HEIGHT = 8;
+export const POINT_ANNOTATION_ICON_WIDTH = 24;
+export const ANNOTATION_POPOVER_CARET_HEIGHT = 8;
 
 export const PAGE_PADDING_TOP = 15;
 export const PAGE_PADDING_BOTTOM = 15;
