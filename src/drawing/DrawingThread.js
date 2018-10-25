@@ -362,6 +362,11 @@ class DrawingThread extends AnnotationThread {
         });
     }
 
+    /**
+     * Clears any existing boundaries and re-redraws a new boundary around the drawing annotation
+     *
+     * @return {void}
+     */
     drawBoundary() {
         this.clearBoundary();
     }
