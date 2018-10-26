@@ -11,6 +11,7 @@ import {
     PAGE_PADDING_TOP,
     PAGE_PADDING_BOTTOM,
     BORDER_OFFSET,
+    INLINE_POPOVER_HEIGHT,
     SELECTOR_CLASS_ANNOTATION_POPOVER
 } from '../constants';
 
@@ -507,7 +508,6 @@ class DocHighlightThread extends AnnotationThread {
             SELECTOR_CLASS_ANNOTATION_POPOVER,
             this.renderAnnotationPopover
         );
-        const popoverDimensions = popoverEl.getBoundingClientRect();
         const dialogDimensions = popoverEl.getBoundingClientRect();
         const dialogWidth = dialogDimensions.width;
         let dialogX = browserX - dialogWidth / 2; // Center dialog
@@ -520,12 +520,12 @@ class DocHighlightThread extends AnnotationThread {
 
         if (dialogY < 0) {
             dialogY = 0;
-        } else if (dialogY + popoverDimensions.height > pageHeight) {
-            dialogY = pageHeight - popoverDimensions.height;
+        } else if (dialogY + INLINE_POPOVER_HEIGHT > pageHeight) {
+            dialogY = pageHeight - INLINE_POPOVER_HEIGHT;
         }
 
         popoverEl.style.left = `${dialogX}px`;
-        popoverEl.style.top = `${dialogY + popoverDimensions.height / 2 - BORDER_OFFSET}px`;
+        popoverEl.style.top = `${dialogY + INLINE_POPOVER_HEIGHT / 2 - BORDER_OFFSET}px`;
     };
 
     /**
