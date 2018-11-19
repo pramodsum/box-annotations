@@ -10,7 +10,7 @@ import {
     SELECTOR_CLASS_ANNOTATION_POPOVER
 } from '../constants';
 import { getBrowserCoordinatesFromLocation, getContext } from './docUtil';
-import { createLocation, getScale, repositionCaret, findElement, getPageEl, shouldDisplayMobileUI } from '../util';
+import { createLocation, getScale, repositionCaret, findElement, getPageEl } from '../util';
 
 class DocDrawingThread extends DrawingThread {
     /** @property {HTMLElement} - Page element being observed */
@@ -320,7 +320,7 @@ class DocDrawingThread extends DrawingThread {
      * @return {void}
      */
     position = () => {
-        if (shouldDisplayMobileUI(this.container)) {
+        if (this.isMobile) {
             return;
         }
 

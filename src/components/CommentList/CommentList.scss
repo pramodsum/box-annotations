@@ -32,7 +32,7 @@
     }
 
     // MOBILE CSS
-    @media #{$mobile}, #{$tablet} {
+    .ba-mobile-popover {
         .ba-comment-list {
             background: white;
             flex-grow: 1;

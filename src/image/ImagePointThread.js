@@ -1,6 +1,6 @@
 // @flow
 import AnnotationThread from '../AnnotationThread';
-import { showElement, shouldDisplayMobileUI, repositionCaret, findElement, isInUpperHalf } from '../util';
+import { showElement, repositionCaret, findElement, isInUpperHalf } from '../util';
 import { getBrowserCoordinatesFromLocation } from './imageUtil';
 import {
     STATES,
@@ -20,7 +20,7 @@ class ImagePointThread extends AnnotationThread {
      * @return {HTMLElement} The correct parent based on mobile view or not
      */
     getPopoverParent() {
-        return shouldDisplayMobileUI(this.container) ? this.container : this.annotatedElement;
+        return this.isMobile ? this.container : this.annotatedElement;
     }
 
     /** @inheritdoc */
@@ -43,7 +43,7 @@ class ImagePointThread extends AnnotationThread {
 
     /** @inheritdoc */
     position = () => {
-        if (shouldDisplayMobileUI(this.container)) {
+        if (this.isMobile) {
             return;
         }
 

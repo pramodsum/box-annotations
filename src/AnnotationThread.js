@@ -62,6 +62,7 @@ class AnnotationThread extends EventEmitter {
         this.threadNumber = data.threadNumber || '';
         this.type = data.type;
         this.locale = data.locale;
+        this.isMobile = data.isMobile || false;
         this.hasTouch = data.hasTouch || false;
         this.permissions = data.permissions;
         this.state = STATES.inactive;
@@ -157,7 +158,7 @@ class AnnotationThread extends EventEmitter {
      * @return {HTMLElement} Parent element for the annotation popover
      */
     getPopoverParent() {
-        return util.shouldDisplayMobileUI(this.container)
+        return this.isMobile
             ? this.container
             : // $FlowFixMe
             util.getPageEl(this.annotatedElement, this.location.page);
@@ -182,7 +183,7 @@ class AnnotationThread extends EventEmitter {
             <AnnotationPopover
                 id={this.id}
                 type={this.type}
-                isMobile={util.shouldDisplayMobileUI(this.container)}
+                isMobile={this.isMobile}
                 createdAt={this.createdAt}
                 createdBy={this.createdBy}
                 modifiedAt={this.modifiedAt}
@@ -542,7 +543,7 @@ class AnnotationThread extends EventEmitter {
 
         this.updateAnnotationThread(savedAnnotation);
 
-        if (util.shouldDisplayMobileUI(this.container)) {
+        if (this.isMobile) {
             // Changing state from pending
             this.state = STATES.active;
         } else {

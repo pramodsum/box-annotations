@@ -39,7 +39,7 @@
     padding: 0;
     user-select: none;
 
-    @media #{$mobile}, #{$tablet} {
+    .ba-mobile-popover {
         font-size: 16px;
         line-height: 16px;
 

@@ -13,6 +13,8 @@ import {
 } from './constants';
 import FileVersionAPI from './api/FileVersionAPI';
 
+const DESKTOP_MIN_WIDTH = 1025;
+
 class Annotator extends EventEmitter {
     /** @param {HTMLElement} */
     annotatedElement: HTMLElement;
@@ -214,6 +216,7 @@ class Annotator extends EventEmitter {
 
         const options = {
             header: this.options.header,
+            isMobile: this.options.isMobile || false,
             hasTouch: this.hasTouch,
             locale: this.locale
         };

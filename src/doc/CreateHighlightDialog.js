@@ -5,15 +5,7 @@ import { render, unmountComponentAtNode } from 'react-dom';
 import EventEmitter from 'events';
 
 import AnnotationPopover from '../components/AnnotationPopover';
-import {
-    repositionCaret,
-    getPageInfo,
-    findElement,
-    getPopoverLayer,
-    isInElement,
-    getPageEl,
-    shouldDisplayMobileUI
-} from '../util';
+import { repositionCaret, getPageInfo, findElement, getPopoverLayer, isInElement, getPageEl } from '../util';
 import { getDialogCoordsFromRange } from './docUtil';
 import {
     CREATE_EVENT,
@@ -62,6 +54,7 @@ class CreateHighlightDialog extends EventEmitter {
 
         this.annotatedElement = annotatedElement;
         this.container = config.container;
+        this.isMobile = config.isMobile || false;
         this.hasTouch = !!config.hasTouch || false;
         this.allowHighlight = config.allowHighlight || false;
         this.allowComment = config.allowComment || false;
@@ -114,7 +107,7 @@ class CreateHighlightDialog extends EventEmitter {
             return;
         }
 
-        if (shouldDisplayMobileUI(this.container)) {
+        if (this.isMobile) {
             this.position = { x: 0, y: 0 };
         } else {
             this.setPosition(this.selection);
@@ -131,9 +124,7 @@ class CreateHighlightDialog extends EventEmitter {
      * @return {void}
      */
     renderAnnotationPopover = (type: AnnotationType = TYPES.highlight) => {
-        const pageEl = shouldDisplayMobileUI(this.container)
-            ? this.container
-            : getPageEl(this.annotatedElement, this.pageInfo.page);
+        const pageEl = this.isMobile ? this.container : getPageEl(this.annotatedElement, this.pageInfo.page);
         const popoverLayer = getPopoverLayer(pageEl);
 
         this.createPopoverComponent = render(
@@ -148,7 +139,7 @@ class CreateHighlightDialog extends EventEmitter {
                 onCreate={this.onCreate}
                 onCommentClick={this.onCommentClick}
                 isPending={true}
-                isMobile={shouldDisplayMobileUI(this.container)}
+                isMobile={this.isMobile}
                 headerHeight={this.headerHeight}
             />,
             popoverLayer
@@ -210,7 +201,7 @@ class CreateHighlightDialog extends EventEmitter {
      * @return {void}
      */
     updatePosition = () => {
-        if (shouldDisplayMobileUI(this.container)) {
+        if (this.isMobile) {
             return;
         }
 

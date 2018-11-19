@@ -87,18 +87,19 @@
     }
 
     // MOBILE & TABLET CSS
-    @media #{$mobile}, #{$tablet} {
+    .ba-mobile-popover {
         // SAVED ANNOTATION POPOVER CSS
-        .ba-popover {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            justify-content: flex-start;
-            max-width: unset;
-            top: 0;
-            width: 100%;
-        }
+        border-left: 1px solid $seesee;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        justify-content: flex-start;
+        max-width: 341px; // Max width matches the max-width of the Preview Sidebar
+        right: 0;
+        top: 0;
+        width: 100%;
 
+        // HEADER
         .ba-mobile-header {
             background: white;
             border-bottom: 1px solid #ccc;
@@ -108,14 +109,42 @@
             width: 100%;
         }
 
-        .ba-popover-overlay {
-            background: white;
+        .ba-create-popover .ba-mobile-header {
             display: flex;
-            flex-direction: column;
+        }
+
+        .ba-inline .ba-mobile-header {
+            display: none;
+        }
+
+        // INLINE
+        &.ba-inline {
+            border: none;
+            width: 100%;
+        }
+
+        // CREATE
+        .ba-create-popover,
+        .ba-create-popover .ba-popover-overlay {
+            background: white;
             height: 100%;
         }
 
-        .ba-popover .ba-popover-overlay {
+        .ba-inline.ba-create-popover,
+        .ba-inline.ba-create-popover .ba-popover-overlay {
+            background: transparent;
+            height: auto;
+        }
+
+        // PHONE-SPECIFIC CSS
+        @media #{$mobile} {
+            border-left: none;
+            max-width: unset;
+            right: unset;
+        }
+
+        .ba-popover-overlay {
+            background: white;
             border: none;
             box-shadow: unset;
             display: flex;
@@ -170,41 +199,6 @@
             height: auto;
             justify-content: flex-end;
             padding: 0;
-        }
-    }
-
-    // TABLET-SPECIFIC CSS
-    @media #{$tablet} {
-        .ba-popover {
-            border-left: 1px solid $seesee;
-            // Max width matches the max-width of the Preview Sidebar
-            max-width: 341px;
-            right: 0;
-        }
-
-        .ba-create-popover .ba-mobile-header {
-            display: flex;
-        }
-
-        .ba-popover.ba-inline {
-            border: none;
-            width: 100%;
-        }
-
-        .ba-inline .ba-mobile-header {
-            display: none;
-        }
-
-        .ba-create-popover,
-        .ba-create-popover .ba-popover-overlay {
-            background: white;
-            height: 100%;
-        }
-
-        .ba-inline.ba-create-popover,
-        .ba-inline.ba-create-popover .ba-popover-overlay {
-            background: transparent;
-            height: auto;
         }
     }
 }

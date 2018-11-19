@@ -290,6 +290,7 @@ class DocAnnotator extends Annotator {
         }
 
         this.createHighlightDialog = new CreateHighlightDialog(this.annotatedElement, {
+            isMobile: this.options.isMobile || false,
             hasTouch: this.hasTouch,
             allowComment: this.commentHighlightEnabled,
             allowHighlight: this.plainHighlightEnabled,

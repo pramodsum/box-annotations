@@ -1,6 +1,6 @@
 // @flow
 import AnnotationThread from '../AnnotationThread';
-import { getPageEl, showElement, findElement, repositionCaret, shouldDisplayMobileUI, isInUpperHalf } from '../util';
+import { getPageEl, showElement, findElement, repositionCaret, isInUpperHalf } from '../util';
 import { getBrowserCoordinatesFromLocation } from './docUtil';
 import {
     STATES,
@@ -49,7 +49,7 @@ class DocPointThread extends AnnotationThread {
      * @return {void}
      */
     position = () => {
-        if (shouldDisplayMobileUI(this.container)) {
+        if (this.isMobile) {
             return;
         }
 

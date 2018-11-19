@@ -80,7 +80,7 @@ class AnnotationPopover extends React.PureComponent<Props> {
                 <div
                     className={classNames(CLASS_ANNOTATION_POPOVER, {
                         'ba-inline': isInline,
-                        'ba-animate-popover': isMobile,
+                        'ba-mobile-popover': isMobile,
                         'ba-create-popover': isPending
                     })}
                 >

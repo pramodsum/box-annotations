@@ -68,7 +68,7 @@ class DocHighlightThread extends AnnotationThread {
         this.reset();
 
         // Clear and reset mobile annotations dialog
-        if (util.shouldDisplayMobileUI(this.container)) {
+        if (this.isMobile) {
             this.unmountPopover();
         } else if (util.isPlainHighlight(this.comments)) {
             this.renderAnnotationPopover();
@@ -456,7 +456,7 @@ class DocHighlightThread extends AnnotationThread {
      * @return {void}
      */
     position = () => {
-        if (util.shouldDisplayMobileUI(this.container)) {
+        if (this.isMobile) {
             return;
         }
 
