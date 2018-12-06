@@ -175,31 +175,17 @@ class AnnotationThread extends EventEmitter {
             event.preventDefault();
         }
 
-        const isPending = this.state === STATES.pending;
+        // Update thread number in icon if needed
+        if (this.threadNumber && this.element) {
+            this.element.textContent = this.threadNumber;
+        }
 
-        const pageEl = this.getPopoverParent();
-        this.popoverComponent = render(
-            <AnnotationPopover
-                id={this.id}
-                type={this.type}
-                isMobile={util.shouldDisplayMobileUI(this.container)}
-                createdAt={this.createdAt}
-                createdBy={this.createdBy}
-                modifiedAt={this.modifiedAt}
-                canAnnotate={this.canAnnotate}
-                canDelete={this.canDelete}
-                canComment={this.canComment}
-                comments={this.comments}
-                position={this.position}
-                onDelete={this.delete}
-                onCancel={this.cancelUnsavedAnnotation}
-                onCreate={this.save}
-                onCommentClick={this.onCommentClick}
-                isPending={isPending}
-                headerHeight={this.headerHeight}
-            />,
-            util.getPopoverLayer(pageEl)
-        );
+        const annotationElement = document.getElementById(`annotation_${this.id}`);
+        if (!annotationElement) {
+            return;
+        }
+
+        annotationElement.scrollIntoView();
     }
 
     /**
@@ -210,14 +196,6 @@ class AnnotationThread extends EventEmitter {
     unmountPopover() {
         this.reset();
         this.toggleFlippedThreadEl();
-
-        const popoverLayers = this.container.querySelectorAll('.ba-dialog-layer');
-        if (!this.popoverComponent || popoverLayers.length === 0) {
-            return;
-        }
-
-        popoverLayers.forEach(unmountComponentAtNode);
-        this.popoverComponent = null;
     }
 
     /**
@@ -551,7 +529,10 @@ class AnnotationThread extends EventEmitter {
         const indicatorEl = document.createElement('button');
         indicatorEl.classList.add(CLASS_ANNOTATION_POINT_MARKER);
         indicatorEl.setAttribute('data-type', DATA_TYPE_ANNOTATION_INDICATOR);
-        indicatorEl.innerHTML = ICON_PLACED_ANNOTATION;
+
+        if (this.threadNumber) {
+            indicatorEl.textContent = this.threadNumber;
+        }
         return indicatorEl;
     }
 

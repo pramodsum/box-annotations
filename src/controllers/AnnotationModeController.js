@@ -459,6 +459,50 @@ class AnnotationModeController extends EventEmitter {
         return thread;
     }
 
+    replaceThreadByID(threadID, pageNum, data) {
+        let thread = null;
+        if (!threadID) {
+            return;
+        }
+
+        if (pageNum) {
+            thread = this.doesThreadMatch(threadID, pageNum);
+        } else {
+            Object.keys(this.annotations).some((page) => {
+                // $FlowFixMe
+                const matchingThread = this.doesThreadMatch(threadID, page);
+                if (matchingThread) {
+                    thread = matchingThread;
+                }
+                return !!matchingThread;
+            });
+        }
+
+        if (!thread) {
+            return;
+        }
+
+        this.unregisterThread(thread);
+        thread.destroy();
+
+        const annotation = this.registerThread(data);
+        annotation.state = STATES.active;
+        annotation.setupElement();
+        annotation.show();
+
+        this.hadPendingThreads = false;
+        this.pendingThreadID = null;
+    }
+
+    deleteAnnotationById(annotationID) {
+        Object.keys(this.annotations).forEach((page) => {
+            const pageThreads = this.annotations[page];
+            pageThreads.all().forEach((annotation) => {
+                annotation.comments = annotation.comments.filter((comment) => comment.id !== annotationID);
+            });
+        });
+    }
+
     /**
      * Determines whether a thread matches the specified threadID
      *

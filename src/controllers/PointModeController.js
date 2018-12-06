@@ -131,7 +131,7 @@ class PointModeController extends AnnotationModeController {
 
         this.pendingThreadID = thread.threadID;
         thread.show();
-        this.emit(THREAD_EVENT.pending, thread.getThreadEventData());
+        this.emit(THREAD_EVENT.pending, thread);
     }
 
     /** @inheritdoc */
