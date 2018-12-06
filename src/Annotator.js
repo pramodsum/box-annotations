@@ -66,6 +66,8 @@ class Annotator extends EventEmitter {
         this.handleServicesErrors = this.handleServicesErrors.bind(this);
         // $FlowFixMe
         this.hideAnnotations = this.hideAnnotations.bind(this);
+
+        this.emit('annotator', this);
     }
 
     /**
@@ -359,6 +361,13 @@ class Annotator extends EventEmitter {
         return modes[0] || null;
     }
 
+    createAnnotation(data) {
+        const { annotationType: type, location, threadID } = data;
+        const controller = this.modeControllers[type];
+        const thread = controller.replaceThreadByID(threadID, location.page, data);
+        this.emit(THREAD_EVENT.save, thread.getThreadEventData());
+    }
+
     /**
      * Creates a point annotation thread, adds it to in-memory map, and returns it.
      *
@@ -570,6 +579,19 @@ class Annotator extends EventEmitter {
         }
     }
 
+    onAnnotationClick = (data) => {
+        const { location, threadID, annotationType } = data;
+        const controller = this.modeControllers[annotationType];
+        if (!controller) {
+            return;
+        }
+
+        const annotation = controller.getThreadByID(threadID, location.page);
+        if (annotation && annotation.element) {
+            annotation.element.scrollIntoView();
+        }
+    };
+
     /**
      * Emits a generic annotator event
      *
@@ -580,7 +602,10 @@ class Annotator extends EventEmitter {
      */
     emit(event: Event, data: ?Object) {
         const { annotator } = this.options;
-        super.emit(event, data);
+        super.emit(event, {
+            annotator: this,
+            ...data
+        });
         super.emit('annotatorevent', {
             event,
             data,

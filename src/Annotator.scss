@@ -74,9 +74,13 @@
 //------------------------------------------------------------------------------
 
 .ba-point-annotation-marker {
-    background-color: transparent;
-    border-style: none;
+    background-color: $lemon-meringue;
+    border: 2px solid white;
+    border-radius: 50%;
+    box-shadow: 1px 1px 1px $seesee;
+    color: black;
     cursor: pointer;
+    height: 24px;
     padding: 0;
     position: absolute;
     width: 24px;
