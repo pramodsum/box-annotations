@@ -18,3 +18,6 @@ lib
 *~~bak
 functional-tests/output
 build/rsync.json
+cypress/screenshots
+cypress/videos
+cypress/integration/examples
