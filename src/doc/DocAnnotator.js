@@ -47,9 +47,9 @@ class DocAnnotator extends Annotator {
     /** @property {CreateHighlightDialog} - UI used to create new highlight annotations. */
     createHighlightDialog: ?CreateHighlightDialog;
 
-    /** @property {Event} - For delaying creation of highlight quad points and dialog. Tracks the
+    /** @property {MouseEvent} - For delaying creation of highlight quad points and dialog. Tracks the
      * current selection event, made in a previous event. */
-    lastHighlightEvent: ?Event;
+    lastHighlightEvent: ?MouseEvent;
 
     /** @property {Selection} - For tracking diffs in text selection, for mobile highlights creation. */
     lastSelection: ?Selection;
@@ -129,23 +129,20 @@ class DocAnnotator extends Annotator {
      * the origin. For highlight annotations, we return the PDF quad points
      * as defined by the PDF spec and page the highlight is on.
      *
-     * @param {Event} event DOM event
+     * @param {MouseEvent} event DOM event
      * @param {AnnotationType} annotationType Type of annotation
      * @return {Object|null} Location object
      */
-    getLocationFromEvent = (event: Event, annotationType: AnnotationType): ?Location => {
+    getLocationFromEvent = (event: MouseEvent, annotationType: AnnotationType): ?Location => {
         let location = null;
         const zoomScale = util.getScale(this.annotatedElement);
 
         if (annotationType === TYPES.point) {
-            let clientEvent = event;
+            const clientEvent = get(event, 'targetTouches[0]', event);
 
             // $FlowFixMe
-            if (this.hasTouch && event.targetTouches) {
-                if (event.targetTouches.length <= 0) {
-                    return location;
-                }
-                clientEvent = event.targetTouches[0];
+            if (!event.targetTouches || event.targetTouches.length === 0) {
+                return location;
             }
 
             // If click isn't on a page, ignore
@@ -400,12 +397,7 @@ class DocAnnotator extends Annotator {
      * @return {void}
      */
     clickHandler = (event: MouseEvent) => {
-        let mouseEvent = event;
-
-        // $FlowFixMe
-        if (this.hasTouch && event.targetTouches) {
-            mouseEvent = event.targetTouches[0];
-        }
+        const mouseEvent = get(event, 'targetTouches[0]', event);
 
         // Don't do anything if the click is in a popover
         if (util.isInDialog(mouseEvent, this.container)) {
@@ -597,7 +589,7 @@ class DocAnnotator extends Annotator {
             this.modeControllers[TYPES.highlight_comment].applyActionToThreads((thread) => thread.reset(), page);
         }
 
-        this.lastHighlightEvent = this.hasTouch ? get(event, 'targetTouches[0]', event) : event;
+        this.lastHighlightEvent = get(event, 'targetTouches[0]', event);
         this.lastSelection = selection;
     }
 
@@ -647,12 +639,7 @@ class DocAnnotator extends Annotator {
      */
     highlightMousedownHandler = (event: MouseEvent) => {
         const prevMouseDownEvent = this.mouseDownEvent;
-        this.mouseDownEvent = event;
-
-        // $FlowFixMe
-        if (this.hasTouch && event.targetTouches) {
-            this.mouseDownEvent = event.targetTouches[0];
-        }
+        this.mouseDownEvent = get(event, 'targetTouches[0]', event);
 
         if (util.isInAnnotationOrMarker(event, this.container)) {
             this.mouseDownEvent = null;
@@ -724,11 +711,7 @@ class DocAnnotator extends Annotator {
             this.highlighter.removeAllHighlights();
         }
 
-        let mouseUpEvent = event;
-        // $FlowFixMe
-        if (this.hasTouch && event.targetTouches) {
-            mouseUpEvent = event.targetTouches[0];
-        }
+        const mouseUpEvent = get(event, 'targetTouches[0]', event);
 
         // Creating highlights is disabled on mobile for now since the
         // event we would listen to, selectionchange, fires continuously and
@@ -745,10 +728,10 @@ class DocAnnotator extends Annotator {
      * If the user adds a comment, the type changes to
      * ANNOTATION_TYPE_HIGHLIGHT_COMMENT.
      *
-     * @param {Event} event DOM event
+     * @param {MouseEvent} event DOM event
      * @return {void}
      */
-    highlightCreateHandler = (event: Event) => {
+    highlightCreateHandler = (event: MouseEvent) => {
         event.stopPropagation();
         event.preventDefault();
 

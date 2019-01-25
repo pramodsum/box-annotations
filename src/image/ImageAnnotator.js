@@ -1,4 +1,5 @@
 // @flow
+import get from 'lodash/get';
 import Annotator from '../Annotator';
 import * as util from '../util';
 import * as imageUtil from './imageUtil';
@@ -20,18 +21,16 @@ class ImageAnnotator extends Annotator {
      * point annotations, we return the (x, y) coordinates for the point
      * with the top left corner of the image as the origin.
      *
-     * @param {Event} event - DOM event
+     * @param {MouseEvent} event - DOM event
      * @return {Location|null} Location object
      */
-    getLocationFromEvent = (event: EventEmitter): ?Location => {
+    getLocationFromEvent = (event: MouseEvent): ?Location => {
         let location = null;
+        const clientEvent = get(event, 'targetTouches[0]', event);
 
-        let clientEvent = event;
-        if (this.hasTouch) {
-            if (!event.targetTouches || event.targetTouches.length === 0) {
-                return location;
-            }
-            clientEvent = event.targetTouches[0];
+        // $FlowFixMe
+        if (!event.targetTouches || event.targetTouches.length === 0) {
+            return location;
         }
 
         // Get image tag inside viewer

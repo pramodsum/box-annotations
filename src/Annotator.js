@@ -176,12 +176,12 @@ class Annotator extends EventEmitter {
      * Must be implemented to return an annotation location object from the DOM
      * event.
      *
-     * @param {Event} event - DOM event
+     * @param {MouseEvent} event - DOM event
      * @param {AnnotationType} annotationType - Type of annotation
      * @return {Object} Location object
      */
     /* eslint-disable-next-line no-unused-vars */
-    getLocationFromEvent = (event: Event, annotationType: AnnotationType): ?Location => {};
+    getLocationFromEvent = (event: MouseEvent, annotationType: AnnotationType): ?Location => {};
 
     /**
      * Must be implemented to determine the annotated element in the viewer.
