@@ -11,5 +11,4 @@ General explanations of the available functionality and examples of how to use B
 * [Enabling/Disabling Annotation Types](enabling-types.md)
 * [Annotator](annotator.md)
 * [Annotation Thread](thread.md)
-* [Annotation Dialog](dialog.md)
 * [Creating a new Annotation Type](add-annotation-type.md)
