@@ -204,6 +204,19 @@
     lodash "^4.17.10"
     to-fast-properties "^2.0.0"
 
+"@box/frontend@^1.0.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@box/frontend/-/frontend-1.1.0.tgz#dc5ccfc3e6d3f7a1f7ef536e3806721bf7b7385a"
+  integrity sha512-HgVVZan6kzmLu0kMAGQ4/99hwMKhXf9hcRlQiU3qJexZdIAMn284ED2m8NHLaP6PkevVJI1HEst71UXHyhLwHw==
+  dependencies:
+    properties-parser "^0.3.1"
+    rimraf "^2.6.2"
+
+"@box/languages@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@box/languages/-/languages-1.0.0.tgz#e59b259b34b1b4c399778682732c3d0038864284"
+  integrity sha512-VdrUJK8tICkE4KrgN9FcRmqI+I72vPiDeRnlzX0Ua06etEzNPUa5E3tBnuZleWfZiBshhSScXfEbZdNCWkDHtQ==
+
 "@commitlint/cli@^7.2.1":
   version "7.2.1"
   resolved "https://registry.yarnpkg.com/@commitlint/cli/-/cli-7.2.1.tgz#dbb9eeb1f5015a129bb0801fbc1115eb1dcd513b"

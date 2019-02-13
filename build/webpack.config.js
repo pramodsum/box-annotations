@@ -9,9 +9,10 @@ const fs = require('fs');
 
 const license = require('./license');
 const commonConfig = require('./webpack.common.config');
-const TranslationsPlugin = require('./TranslationsPlugin');
+const TranslationsPlugin = require('@box/frontend/webpack/TranslationsPlugin.js');
 const RsyncPlugin = require('./RsyncPlugin');
 
+const Translations = new TranslationsPlugin();
 const isRelease = process.env.NODE_ENV === 'production';
 const isDev = process.env.NODE_ENV === 'dev';
 const language = process.env.LANGUAGE;
@@ -60,7 +61,7 @@ if (isDev) {
 
     // Add inline source map
     config.devtool = 'source-map';
-    config.plugins.push(new TranslationsPlugin());
+    config.plugins.push(Translations);
     config.plugins.push(
         new CircularDependencyPlugin({
             exclude: /node_modules/,

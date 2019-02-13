@@ -33,6 +33,8 @@
     "scroll-into-view-if-needed": "^2.2.16"
   },
   "devDependencies": {
+    "@box/frontend": "^1.0.0",
+    "@box/languages": "^1.0.0",
     "autoprefixer": "^9.1.3",
     "axios": "^0.18.0",
     "babel-cli": "^6.26.0",
@@ -136,7 +138,7 @@
   },
   "scripts": {
     "build": "yarn install && LANGUAGE=en-US BABEL_ENV=production NODE_ENV=production CI=1 node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js -p --progress --colors --config build/webpack.config.js",
-    "build-locales": "node ./build/props-to-es2015.js",
+    "build:i18n": "props2es",
     "build-prod": "BABEL_ENV=production NODE_ENV=production webpack --config build/webpack.config.js --mode production",
     "build-variables": "node ./build/build-style-vars.js ./src/styles/_variables.scss ./src/styles/variables.js ./src/styles/variables.json",
     "test": "yarn install && NODE_ENV=test yarn run jest",

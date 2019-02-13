@@ -1,5 +1,5 @@
 const workerFarm = require('worker-farm');
-const locales = require('box-locales');
+const locales = require('@box/languages');
 const numCPUs = require('os').cpus().length;
 const { execSync } = require('child_process');
 const path = require('path');
