@@ -31,6 +31,10 @@
 
     // TABLET-SPECIFIC CSS
     @media #{$mobile}, #{$tablet} {
+        .ba-action-controls {
+            width: 100%;
+        }
+
         .ba-create-popover .ba-action-controls {
             border: none;
             box-shadow: none;

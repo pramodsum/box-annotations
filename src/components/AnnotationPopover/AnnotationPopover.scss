@@ -124,22 +124,19 @@
             border: none;
             box-shadow: unset;
             display: flex;
+            flex: 1 0 auto;
             flex-direction: column;
             height: 100%;
+            justify-content: space-between;
             overflow: unset;
             padding: 0;
         }
 
         // INLINE ANNOTATION POPOVER CSS
-        .ba-popover.ba-inline-popover {
-            height: auto;
-        }
-
         .ba-inline-popover .ba-popover-overlay {
             background: transparent;
             border-bottom: 1px solid $seesee;
             box-shadow: 0 2px 6px 0 rgba(0, 0, 0, .1);
-            height: auto;
             margin: 0;
             text-align: center;
         }
@@ -193,6 +190,7 @@
 
         .ba-popover.ba-inline-popover {
             border: none;
+            max-width: unset;
             width: 100%;
         }
 
